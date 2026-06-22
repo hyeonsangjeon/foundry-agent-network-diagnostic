@@ -86,10 +86,10 @@ bash deploy/deploy.sh --what-if --location koreacentral
 bash deploy/deploy.sh --scenario lab --location koreacentral --yes
 ```
 
-다 보고 나면 정리(삭제):
+다 보고 나면 정리(삭제) — 랩의 기본 리소스 그룹은 `rg-agent-net-lab`입니다:
 
 ```bash
-bash deploy/destroy.sh
+bash deploy/destroy.sh --resource-group rg-agent-net-lab --yes
 ```
 
 > **팁:** 진단 대상 Foundry 환경과 **같은 리전**으로 맞추면 재현이 더 충실합니다(예: `koreacentral`).

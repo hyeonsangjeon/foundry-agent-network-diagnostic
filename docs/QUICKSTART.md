@@ -87,10 +87,10 @@ Real deploy → diagnose → report:
 bash deploy/deploy.sh --scenario lab --location koreacentral --yes
 ```
 
-Tear it down when you're done:
+Tear it down when you're done (the lab's default resource group is `rg-agent-net-lab`):
 
 ```bash
-bash deploy/destroy.sh
+bash deploy/destroy.sh --resource-group rg-agent-net-lab --yes
 ```
 
 > **Tip:** matching the **same region** as the Foundry environment you're diagnosing makes the

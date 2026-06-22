@@ -85,10 +85,9 @@ path**. See [`docs/PLATFORM_PATTERN.md`](docs/PLATFORM_PATTERN.md) for the full 
 > **[`docs/QUICKSTART.md`](docs/QUICKSTART.md)** — no Azure needed for the first demo.
 
 ```bash
-# 1. Clone & install (no third-party deps required for the diagnostic itself)
+# 1. Clone (the diagnostic is stdlib-only — nothing to pip install)
 git clone https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic.git
 cd foundry-agent-network-diagnostic
-pip install -r requirements.txt
 
 # 2. Authenticate (read-only)
 az login
@@ -98,7 +97,7 @@ cp config.sample.json config.json
 # edit config.json with your environment values (config.json is gitignored)
 
 # 4. Run the diagnostic
-python src/diagnose.py --config config.json
+python3 src/diagnose.py --config config.json
 
 # 5. Open the report
 open report.html        # macOS
@@ -108,14 +107,14 @@ open report.html        # macOS
 **Try it right now with zero Azure** — built-in mock data renders the full dashboard:
 
 ```bash
-python src/diagnose.py --config config.sample.json --mock
+python3 src/diagnose.py --config config.sample.json --mock
 open report.html
 ```
 
 Run a **subset of checks**:
 
 ```bash
-python src/diagnose.py --config config.json --checks 1,2,4
+python3 src/diagnose.py --config config.json --checks 1,2,4
 ```
 
 Full install/usage walkthrough: [`docs/USAGE.md`](docs/USAGE.md).

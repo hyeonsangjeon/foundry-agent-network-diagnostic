@@ -83,10 +83,9 @@ flowchart LR
 > **[`docs/QUICKSTART.ko.md`](docs/QUICKSTART.ko.md)** 부터 시작하세요 — 첫 데모는 Azure가 필요 없습니다.
 
 ```bash
-# 1. 클론 및 설치 (진단 본체는 외부 의존성 불필요)
+# 1. 클론 (진단 본체는 stdlib 전용 — pip install 할 것이 없음)
 git clone https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic.git
 cd foundry-agent-network-diagnostic
-pip install -r requirements.txt
 
 # 2. 인증 (read-only)
 az login
@@ -96,7 +95,7 @@ cp config.sample.json config.json
 # config.json에 본인 환경 값을 입력 (config.json은 gitignore 처리됨)
 
 # 4. 진단 실행
-python src/diagnose.py --config config.json
+python3 src/diagnose.py --config config.json
 
 # 5. 리포트 열기
 open report.html        # macOS
@@ -106,14 +105,14 @@ open report.html        # macOS
 **지금 바로 Azure 없이 시험해 보기** — 내장 mock 데이터로 전체 대시보드를 렌더합니다:
 
 ```bash
-python src/diagnose.py --config config.sample.json --mock
+python3 src/diagnose.py --config config.sample.json --mock
 open report.html
 ```
 
 **일부 체크만** 실행:
 
 ```bash
-python src/diagnose.py --config config.json --checks 1,2,4
+python3 src/diagnose.py --config config.json --checks 1,2,4
 ```
 
 전체 설치/사용 가이드: [`docs/USAGE.ko.md`](docs/USAGE.ko.md).
