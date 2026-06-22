@@ -11,6 +11,13 @@ report.*.json
 out/
 output/
 
+# --- Deployment automation artifacts (logs, backups, azd state) ---
+.deployment/
+deployments/
+config.json.bak.*
+*.bak.*
+.azure/
+
 # --- Local planning / spec / result notes (private, do not commit) ---
 plan.md
 plan.*.md

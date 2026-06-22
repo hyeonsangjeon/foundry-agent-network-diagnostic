@@ -6,6 +6,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > 한국어 요약은 각 버전 하단의 **(한국어)** 블록을 참고하세요.
 
+## [0.2.0] - 2026-06-22
+
+Deployment automation + two diagnostic methods.
+
+### Added
+- **`deploy/` automation** with a progress-tracked UX (progress bar, stepwise `[OK]/[WARN]/[FAIL]`
+  status, timestamped logs under `.deployment/`) modeled on the
+  [azure-ai-search-foundry-iq-live-knowledge-sources](https://github.com/hyeonsangjeon/azure-ai-search-foundry-iq-live-knowledge-sources)
+  deploy script.
+- **Method 1 — deploy & verify** (`deploy/deploy.sh`): provisions a small, real reproduction lab
+  (VNet + agent subnet delegated to `Microsoft.App/environments` + private-endpoint subnet + a
+  custom private DNS zone + a private backend behind a custom FQDN), writes `config.json` from the
+  deployment outputs, runs the read-only diagnostic, and points you at `report.html`. Two scenarios:
+  `lab` (Storage + Private Endpoint, fast/cheap, default) and `apim` (API Management in internal VNet
+  mode, faithful but ~45 min and costlier).
+- **Method 2 — verify existing** (`deploy/verify-existing.sh`): collects an already-deployed
+  endpoint + network settings via flags or interactive prompts, writes `config.json`, and runs the
+  diagnostic. Creates nothing.
+- **`deploy/destroy.sh`** teardown with a typed-name confirmation.
+- **`deploy/infra/main.bicep`** (+ `main.parameters.json`) — the reproduction-lab template.
+- **`--what-if`** preview path in `deploy.sh` (preflight + validate + ARM what-if, creates nothing).
+- **Docs:** [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) + [`docs/DEPLOYMENT.ko.md`](docs/DEPLOYMENT.ko.md);
+  README (EN/KO) now documents the two methods; `.gitignore` covers `.deployment/`, `deployments/`,
+  and `config.json` backups.
+
+### Notes
+- The **diagnostic engine remains 100% read-only.** Only `deploy.sh` / `destroy.sh` create or delete
+  resources, and only inside a resource group you name. The reproduction lab is opt-in.
+- `deploy.sh` registers required resource providers best-effort; if your subscription denies provider
+  registration (common in enterprise tenants), it warns and continues — the deploy still works when
+  the providers are already registered.
+
+**(한국어)** 배포 자동화 + 두 가지 진단 방법 추가. 진행률 추적 UX의 **`deploy/` 자동화**(참고:
+live-knowledge-sources 배포 스크립트), **방법 1 배포 후 검증**(`deploy.sh` — 재현 랩 프로비저닝 →
+`config.json` 생성 → 진단 → `report.html`; `lab`/`apim` 시나리오), **방법 2 기존 환경 검증**
+(`verify-existing.sh`, 아무것도 생성하지 않음), **`destroy.sh`** 삭제, **Bicep 템플릿**, **`--what-if`**
+미리보기, 영/한 **`docs/DEPLOYMENT`** 문서 제공. 진단 엔진은 여전히 100% 읽기 전용이며, 리소스 생성/
+삭제는 사용자가 지정한 리소스 그룹 내 `deploy.sh`/`destroy.sh`만 수행합니다.
+
 ## [0.1.0] - 2026-06-22
 
 Initial public release.
@@ -49,4 +88,5 @@ Initial public release.
 알려진 한계: Check 5/6 로그 자동 조회는 고객 권한에 의존(없으면 수동 fallback), Data Proxy 내부 직접 관측 불가
 (주변 신호 기반 추론), SDK/Playground A/B는 가이드 제공. 검증 기준일 2026-06.
 
+[0.2.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v0.2.0
 [0.1.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v0.1.0

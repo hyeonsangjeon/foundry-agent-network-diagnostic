@@ -114,12 +114,47 @@ python src/diagnose.py --config config.json --checks 1,2,4
 
 전체 설치/사용 가이드: [`docs/USAGE.ko.md`](docs/USAGE.ko.md).
 
+## 🧭 두 가지 진단 방법
+
+일회용 **재현 랩**을 띄워서 도구가 처음부터 끝까지 동작하는 것을 보거나, **이미 가지고 있는
+환경**을 가리켜 진단할 수 있습니다. 두 방법 모두 동일한 읽기 전용 `report.html`로 끝납니다.
+전체 가이드: [`docs/DEPLOYMENT.ko.md`](docs/DEPLOYMENT.ko.md).
+
+| | **방법 1 — 배포 후 검증** | **방법 2 — 기존 환경 검증** |
+| --- | --- | --- |
+| 사용 시점 | 도구가 동작하는 것을 깔끔하게 보고 싶을 때 | 이미 배포된 환경이 있을 때 |
+| Azure 리소스 생성? | 예(본인 소유의 작은 랩) | **아니오** — 읽기 전용 |
+| 명령 | `bash deploy/deploy.sh` | `bash deploy/verify-existing.sh` |
+
+**방법 1 — 재현 랩을 배포한 뒤 검증** (진행률 추적, [live-knowledge-sources](https://github.com/hyeonsangjeon/azure-ai-search-foundry-iq-live-knowledge-sources)
+배포 UX 참고):
+
+```bash
+bash deploy/deploy.sh --what-if --location eastus              # 무료 미리보기, 아무것도 안 만듦
+bash deploy/deploy.sh --scenario lab --location eastus --yes   # 배포 → 진단 → report.html
+bash deploy/destroy.sh --resource-group rg-agent-net-lab --yes # 끝나면 삭제
+```
+
+작은 실제 네트워크 경로(VNet + 위임된 agent subnet + 커스텀 프라이빗 FQDN 뒤의 프라이빗
+엔드포인트 백엔드)를 프로비저닝하고, 출력으로 `config.json`을 작성한 뒤 진단을 실행하여
+`report.html`을 엽니다. 충실한(단, 약 45분·비용↑) API Management 게이트웨이 경로는
+`--scenario apim`을 사용하세요.
+
+**방법 2 — 이미 배포된 환경 검증** (아무것도 만들지 않음):
+
+```bash
+bash deploy/verify-existing.sh        # 엔드포인트 + 네트워크 설정을 입력받아 진단
+```
+
+> Azure 리소스를 건드리는 것은 `deploy.sh` / `destroy.sh`(사용자가 지정한 리소스 그룹)뿐입니다.
+> **진단 자체는 항상 읽기 전용입니다.**
+
 <details>
 <summary>콘솔 출력 예시 (mock)</summary>
 
 ```
 Foundry Agent Network Diagnostic
-  mode=mock  generated=2026-06-22T05:17:28Z  v0.1.0
+  mode=mock  generated=2026-06-22T05:17:28Z  v0.2.0
 ------------------------------------------------------------------------
             [PASS]  Hostname resolution (VM perspective)
             [PASS]  Backend reachability (network layer)
@@ -194,10 +229,11 @@ resolution 단계** — 방향은 *플랫폼 경로*, "확인 필요"로 표기.
 - [`docs/PLATFORM_PATTERN.md`](docs/PLATFORM_PATTERN.md) — Foundry Agent 경로 모델과 internal-mode +
   custom FQDN이 왜 다른지에 대한 해설.
 - [`docs/SUPPORT_CASE_GUIDE.md`](docs/SUPPORT_CASE_GUIDE.md) — Microsoft support case에 포함할 항목.
+- [`docs/DEPLOYMENT.ko.md`](docs/DEPLOYMENT.ko.md) — 두 가지 진단 방법 + 재현 랩 배포 자동화.
 
 ## 📝 변경 이력 (Changelog)
 
-[`CHANGELOG.md`](CHANGELOG.md) 참조. 현재 릴리스: **v0.1.0**.
+[`CHANGELOG.md`](CHANGELOG.md) 참조. 현재 릴리스: **v0.2.0**.
 
 ## 👤 작성자 (Author)
 

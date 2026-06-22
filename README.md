@@ -116,12 +116,48 @@ python src/diagnose.py --config config.json --checks 1,2,4
 
 Full install/usage walkthrough: [`docs/USAGE.md`](docs/USAGE.md).
 
+## 🧭 Two ways to diagnose
+
+You can either spin up a throwaway **reproduction lab** and watch the tool work end to
+end, or point it at an **environment you already have**. Both end at the same read-only
+`report.html`. Full guide: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+
+| | **Method 1 — deploy & verify** | **Method 2 — verify existing** |
+| --- | --- | --- |
+| Use when | You want a clean lab to see it work | You already have a deployed environment |
+| Creates Azure resources? | Yes (a small lab you own) | **No** — read-only |
+| Command | `bash deploy/deploy.sh` | `bash deploy/verify-existing.sh` |
+
+**Method 1 — deploy a reproduction lab, then verify** (progress-tracked, modeled on the
+[live-knowledge-sources](https://github.com/hyeonsangjeon/azure-ai-search-foundry-iq-live-knowledge-sources)
+deploy UX):
+
+```bash
+bash deploy/deploy.sh --what-if --location eastus          # free preview, creates nothing
+bash deploy/deploy.sh --scenario lab --location eastus --yes   # deploy → diagnose → report.html
+bash deploy/destroy.sh --resource-group rg-agent-net-lab --yes # tear it down when done
+```
+
+It provisions a small real network path (VNet + delegated agent subnet + private-endpoint
+backend behind a custom private FQDN), writes `config.json` from the outputs, runs the
+diagnostic, and opens `report.html`. Use `--scenario apim` for a faithful (but ~45-min,
+costlier) API Management gateway path.
+
+**Method 2 — verify an environment that is already deployed** (creates nothing):
+
+```bash
+bash deploy/verify-existing.sh        # prompts for endpoint + network settings, then diagnoses
+```
+
+> Only `deploy.sh` / `destroy.sh` touch Azure resources (a resource group you name). The
+> **diagnostic itself is always read-only.**
+
 <details>
 <summary>Example console output (mock)</summary>
 
 ```
 Foundry Agent Network Diagnostic
-  mode=mock  generated=2026-06-22T05:17:28Z  v0.1.0
+  mode=mock  generated=2026-06-22T05:17:28Z  v0.2.0
 ------------------------------------------------------------------------
             [PASS]  Hostname resolution (VM perspective)
             [PASS]  Backend reachability (network layer)
@@ -198,10 +234,11 @@ repro time). Verdict: the break is **before the backend, at the resolution stage
 - [`docs/PLATFORM_PATTERN.md`](docs/PLATFORM_PATTERN.md) — the Foundry Agent path model and why
   internal-mode + custom FQDN diverges.
 - [`docs/SUPPORT_CASE_GUIDE.md`](docs/SUPPORT_CASE_GUIDE.md) — what to include in a Microsoft support case.
+- [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) — the two diagnostic methods + the reproduction-lab deploy automation.
 
 ## 📝 Changelog
 
-See [`CHANGELOG.md`](CHANGELOG.md). Current release: **v0.1.0**.
+See [`CHANGELOG.md`](CHANGELOG.md). Current release: **v0.2.0**.
 
 ## 👤 Author
 
