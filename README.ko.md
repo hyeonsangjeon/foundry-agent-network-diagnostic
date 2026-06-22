@@ -8,6 +8,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/actions/workflows/ci.yml"><img src="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT">
   <img src="https://img.shields.io/badge/mode-read--only-1a7f37.svg" alt="Read-only">
@@ -24,7 +25,7 @@
 > - **무엇을:** Standard Agent(BYO VNet) 환경에서 프라이빗 backend(private APIM / private endpoint)
 >   호출이 *어느 단계*에서 깨지는지 격리하는 read-only 일회성 진단 도구. 특히 BYO AI Gateway 경로의
 >   **DNS resolution 실패**를 표적으로 합니다.
-> - **누구를 위해:** 폐쇄형 VNet에서 Foundry Agent를 운영하는 고객, 그리고 이를 지원하는 엔지니어.
+> - **누구를 위해:** 폐쇄형 VNet에서 Foundry Agent를 운영하는 팀, 그리고 이를 지원하는 엔지니어.
 > - **어떻게:** 한 번 실행 → 6개 체크 → root cause 판정이 담긴 색깔 HTML 대시보드.
 
 ---
@@ -32,12 +33,12 @@
 ## ✨ 주요 기능 (Features)
 
 - **6단계 진단** — "VM에서는 정상"이라는 baseline부터 "정확히 이 hop에서 깨진다"까지 경로를 따라갑니다.
-- **Template 16 토폴로지 diff** — 고객 구성을 공식 private-APIM 패턴과 비교하고,
-  *공식 / 고객 현재 / 영향* 3열 표로 **왜 깨지는지**를 설명합니다.
+- **Template 16 토폴로지 diff** — 현재 환경 구성을 공식 private-APIM 패턴과 비교하고,
+  *공식 / 현재 환경 / 영향* 3열 표로 **왜 깨지는지**를 설명합니다.
 - **단일 파일 정적 HTML 대시보드** — 인터넷·CDN·JS 의존성 없이 열립니다(폐쇄망 안전). 캡처해서 공유하세요.
 - **Read-only 안전** — 이미 접근 권한이 있는 구성과 로그만 읽습니다.
 - **Support-case 바로 제출용 출력** — Microsoft 지원 티켓에 복붙할 수 있는 요약 블록 제공.
-- **BYO VNet 고객 전반 재사용** — config 기반, 하드코딩된 식별자 0.
+- **BYO VNet 환경 전반 재사용** — config 기반, 하드코딩된 식별자 0.
 
 ## 🎯 무엇을 진단하나 (What it diagnoses)
 
@@ -50,7 +51,7 @@ Name or service not known
 ```
 
 이는 **backend에 도달하기 전 name resolution 단계에서의 실패**이지 backend나 TLS 문제가 아닙니다. 이 도구는
-어느 단계에서 깨지는지, 그리고 원인이 고객 구성 쪽인지 플랫폼 경로 쪽인지를 격리합니다.
+어느 단계에서 깨지는지, 그리고 원인이 환경 구성 쪽인지 플랫폼 경로 쪽인지를 격리합니다.
 
 ## 🏗️ 동작 원리 (How it works)
 
@@ -58,7 +59,7 @@ Name or service not known
 flowchart LR
     A[Agent endpoint] --> B[Tools Service]
     B --> C[Data Proxy<br/>managed host layer]
-    C -->|name resolution + egress| D[(고객 VNet)]
+    C -->|name resolution + egress| D[(BYO VNet)]
     D --> E[Backend<br/>private APIM]
     E --> F[Model / upstream]
     style C fill:#fff3cd,stroke:#9a6700
@@ -126,8 +127,7 @@ python src/diagnose.py --config config.json --checks 1,2,4
 | Azure 리소스 생성? | 예(본인 소유의 작은 랩) | **아니오** — 읽기 전용 |
 | 명령 | `bash deploy/deploy.sh` | `bash deploy/verify-existing.sh` |
 
-**방법 1 — 재현 랩을 배포한 뒤 검증** (진행률 추적, [live-knowledge-sources](https://github.com/hyeonsangjeon/azure-ai-search-foundry-iq-live-knowledge-sources)
-배포 UX 참고):
+**방법 1 — 재현 랩을 배포한 뒤 검증:**
 
 ```bash
 bash deploy/deploy.sh --what-if --location eastus              # 무료 미리보기, 아무것도 안 만듦
@@ -154,7 +154,7 @@ bash deploy/verify-existing.sh        # 엔드포인트 + 네트워크 설정을
 
 ```
 Foundry Agent Network Diagnostic
-  mode=mock  generated=2026-06-22T05:17:28Z  v1.0.0
+  mode=mock  generated=2026-06-22T05:17:28Z  v1.0.1
 ------------------------------------------------------------------------
             [PASS]  Hostname resolution (VM perspective)
             [PASS]  Backend reachability (network layer)
@@ -175,13 +175,13 @@ Foundry Agent Network Diagnostic
 | # | 체크 | 무엇을 보나 | PASS / WARN / FAIL 의미 |
 | --- | --- | --- | --- |
 | 1 | **Hostname resolution (VM)** | VM에서 backend FQDN resolve, `/etc/resolv.conf` 덤프 | PASS = VM baseline 정상 · FAIL = VM resolve 실패 |
-| 2 | **Backend reachability** | VIP:443에 TCP + TLS (SNI = 고객 FQDN) | PASS = backend 생존·도달 가능 · FAIL = 네트워크/backend 문제 |
+| 2 | **Backend reachability** | VIP:443에 TCP + TLS (SNI = 대상 FQDN) | PASS = backend 생존·도달 가능 · FAIL = 네트워크/backend 문제 |
 | 3 | **Foundry connection topology** | connection category(`ModelGateway` vs `ApiManagement`), agent subnet delegation | WARN = 권장 패턴과 상이 |
-| 4 | **Template 16 토폴로지 diff** | 5개 dimension diff: 공식 / 고객 현재 / 영향 | WARN = 지원 패턴과 상이 |
+| 4 | **Template 16 토폴로지 diff** | 5개 dimension diff: 공식 / 현재 환경 / 영향 | WARN = 지원 패턴과 상이 |
 | 5 | **DNS query 관측** ★ | FQDN 질의가 resolver에 도착했나? 3-way 판정 | FAIL = 질의 없음/실패 · root-cause 방향 |
 | 6 | **APIM gateway log 대조** | 같은 시각 APIM에 request가 도착했나? | FAIL = APIM 도달 전 실패(DNS 단계) |
 
-★ Check 5가 핵심입니다. **고객 구성**(DNS zone-link / forwarding)과 **플랫폼 경로**(managed resolver
+★ Check 5가 핵심입니다. **환경 구성**(DNS zone-link / forwarding)과 **플랫폼 경로**(managed resolver
 동작)를 가릅니다.
 
 ## 📊 출력 예시 (Sample output)
@@ -206,7 +206,7 @@ Foundry Agent Network Diagnostic
 FQDN을 resolve하고 443으로 APIM에 도달하는데도, agent 호출은 `Name or service not known`으로 실패합니다.
 이 도구를 실행하면: Check 1–2 **PASS**(VM·backend 정상), Check 4 **WARN**(Template 16 대비 4개 dimension
 상이), Check 5–6 **FAIL**(재현 시각에 DNS 질의·APIM request 없음). 판정: 문제는 **backend 도달 전,
-resolution 단계** — 방향은 *플랫폼 경로*, "확인 필요"로 표기. 이것이 바로 support case에 가져갈 내용입니다.
+resolution 단계** — 방향은 *플랫폼 경로*, "확인 필요"로 표기.
 
 ## ❓ FAQ / 문제 해결
 
@@ -233,7 +233,7 @@ resolution 단계** — 방향은 *플랫폼 경로*, "확인 필요"로 표기.
 
 ## 📝 변경 이력 (Changelog)
 
-[`CHANGELOG.md`](CHANGELOG.md) 참조. 현재 릴리스: **v1.0.0**.
+[`CHANGELOG.md`](CHANGELOG.md) 참조. 현재 릴리스: **v1.0.1**.
 
 ## 👤 작성자 (Author)
 

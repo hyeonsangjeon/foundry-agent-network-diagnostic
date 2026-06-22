@@ -1,9 +1,9 @@
 """
 Check 4 — Topology diff vs official Template 16 (★ platform-IP centerpiece).
 
-Compares the customer's configuration against the official Foundry "Standard Agent +
+Compares the environment's configuration against the official Foundry "Standard Agent +
 Private APIM" pattern (Template 16), one dimension at a time, and explains the network
-*impact* of each divergence. The output is a 3-column table: official / customer / impact.
+*impact* of each divergence. The output is a 3-column table: official / observed / impact.
 
 This is where Foundry platform understanding shows up — it explains *why* the path
 breaks against the reference architecture, not just "nslookup failed". A divergence is
@@ -31,7 +31,7 @@ CHECK_NAME = "Topology diff vs official Template 16"
 MATCH, DIVERGE, UNKNOWN = "match", "diverge", "unknown"
 
 
-def _customer_apim_exposure(ctx: CheckContext):
+def _observed_apim_exposure(ctx: CheckContext):
     mode = str(ctx.cfg("apim_mode", "")).lower()
     if mode == "pe":
         return "Inbound Private Endpoint", MATCH
@@ -42,7 +42,7 @@ def _customer_apim_exposure(ctx: CheckContext):
     return "needs verification (set apim_mode: internal|external|PE)", UNKNOWN
 
 
-def _customer_dns_zone(ctx: CheckContext):
+def _observed_dns_zone(ctx: CheckContext):
     fqdn = str(ctx.cfg("backend_fqdn", ""))
     if not fqdn or "<" in fqdn:
         return "needs verification (set backend_fqdn)", UNKNOWN
@@ -52,7 +52,7 @@ def _customer_dns_zone(ctx: CheckContext):
     return f"custom private-only zone (*.{domain})", DIVERGE
 
 
-def _customer_connection_category(ctx: CheckContext):
+def _observed_connection_category(ctx: CheckContext):
     cats = ctx.prior_evidence("check3").get("connection_categories") or []
     gateway = next((c for c in cats if c in ("ApiManagement", "ModelGateway")), None)
     if gateway == RECOMMENDED_APIM_CONNECTION_CATEGORY:
@@ -62,7 +62,7 @@ def _customer_connection_category(ctx: CheckContext):
     return "needs verification (check Foundry connection category)", UNKNOWN
 
 
-def _customer_delegation(ctx: CheckContext):
+def _observed_delegation(ctx: CheckContext):
     delegations = ctx.prior_evidence("check3").get("agent_subnet_delegations")
     if delegations is None:
         return "needs verification (set agent_subnet_id)", UNKNOWN
@@ -71,18 +71,18 @@ def _customer_delegation(ctx: CheckContext):
     return f"Not delegated ({delegations or 'none'})", DIVERGE
 
 
-def _customer_dns_zone_link(ctx: CheckContext):
+def _observed_dns_zone_link(ctx: CheckContext):
     # Cannot be reliably determined from config alone; honest about it.
     return ("needs verification — confirm the backend private DNS zone is linked to the "
             "resolver path the managed agent uses"), UNKNOWN
 
 
 _DERIVERS = {
-    "apim_exposure": _customer_apim_exposure,
-    "dns_zone": _customer_dns_zone,
-    "connection_category": _customer_connection_category,
-    "agent_subnet_delegation": _customer_delegation,
-    "dns_zone_link": _customer_dns_zone_link,
+    "apim_exposure": _observed_apim_exposure,
+    "dns_zone": _observed_dns_zone,
+    "connection_category": _observed_connection_category,
+    "agent_subnet_delegation": _observed_delegation,
+    "dns_zone_link": _observed_dns_zone_link,
 }
 
 
@@ -92,14 +92,14 @@ def run(ctx: CheckContext) -> CheckResult:
 
     if ctx.mock:
         m = ctx.mock_for(CHECK_ID)
-        customer = m.get("customer", {})
+        observed = m.get("observed", {})
         verdicts = m.get("verdicts", {})
         for dim in TEMPLATE16_DIMENSIONS:
             k = dim["key"]
             rows.append({
                 "dimension": dim["dimension"],
                 "official": dim["official"],
-                "customer": customer.get(k, "needs verification"),
+                "observed": observed.get(k, "needs verification"),
                 "verdict": verdicts.get(k, UNKNOWN),
                 "impact": dim["why"],
             })
@@ -109,7 +109,7 @@ def run(ctx: CheckContext) -> CheckResult:
             rows.append({
                 "dimension": dim["dimension"],
                 "official": dim["official"],
-                "customer": value,
+                "observed": value,
                 "verdict": verdict,
                 "impact": dim["why"],
             })

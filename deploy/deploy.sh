@@ -5,9 +5,6 @@
 # Provisions a small, real reproduction lab in YOUR subscription, then runs the
 # READ-ONLY diagnostic against it and points you at the static HTML report.
 #
-# Progress UX (bar/step/run_cmd/ok/warn/fail + .deployment logs) is modeled on
-# azure-ai-search-foundry-iq-live-knowledge-sources/scripts/deploy.sh.
-#
 # The diagnostic itself never mutates Azure. Only this script (and destroy.sh)
 # create or delete resources, and only ones you own.
 # =============================================================================

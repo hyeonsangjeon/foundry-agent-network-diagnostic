@@ -108,7 +108,7 @@ Check 5 drives the verdict:
 | Check 5 evidence `verdict` | Direction | Meaning |
 | --- | --- | --- |
 | `no_query` | platform | No query for the FQDN reached the resolver → managed path appears to bypass this VNet DNS path (needs verification) |
-| `nxdomain_or_timeout` | customer | Query arrived but failed → DNS zone-link / forwarding issue |
+| `nxdomain_or_timeout` | configuration | Query arrived but failed → DNS zone-link / forwarding issue |
 | `answered_but_failed` | platform | DNS answered fine yet the call failed → platform cache / alternate resolver path |
 
 Check 6 corroborates: if **no request reached APIM** in the same window, the break is **before the

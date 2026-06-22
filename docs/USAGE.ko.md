@@ -108,7 +108,7 @@ Check 5가 판정을 주도합니다:
 | Check 5 evidence `verdict` | 방향 | 의미 |
 | --- | --- | --- |
 | `no_query` | 플랫폼 | FQDN 질의가 resolver에 도착하지 않음 → managed 경로가 이 VNet DNS path를 안 쓰는 것으로 보임 (확인 필요) |
-| `nxdomain_or_timeout` | 고객 | 질의는 도착했으나 실패 → DNS zone-link / forwarding 문제 |
+| `nxdomain_or_timeout` | 구성 | 질의는 도착했으나 실패 → DNS zone-link / forwarding 문제 |
 | `answered_but_failed` | 플랫폼 | DNS는 정상 응답했는데 호출 실패 → 플랫폼 cache / 다른 resolver path |
 
 Check 6 교차검증: 같은 시간대에 **APIM에 request가 도착하지 않았다면** 문제는 **backend 도달 전** —

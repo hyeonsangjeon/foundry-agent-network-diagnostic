@@ -38,7 +38,7 @@ param namePrefix string = 'fandx${take(uniqueString(resourceGroup().id), 6)}'
 ])
 param scenario string = 'lab'
 
-@description('Custom (private-only) DNS zone that stands in for the customer custom domain.')
+@description('Custom (private-only) DNS zone that stands in for the BYO custom domain.')
 param customDnsZoneName string = 'internal.agentlab.example'
 
 @description('Host label under the custom zone used as the backend FQDN, e.g. "llm".')

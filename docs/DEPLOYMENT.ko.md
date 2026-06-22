@@ -84,7 +84,7 @@ bash deploy/deploy.sh --scenario lab --env-name agent-net-lab --location eastus 
 bash deploy/deploy.sh --scenario apim --env-name agent-apim --location eastus --yes
 ```
 
-> **팁 — 고객 리전과 맞추세요.** 가장 충실한 재현을 위해 **진단 대상 Foundry 환경과 같은
+> **팁 — 대상 리전과 맞추세요.** 가장 충실한 재현을 위해 **진단 대상 Foundry 환경과 같은
 > 리전**에 랩을 배포하세요(예: `--location koreacentral`). 진단 로직 자체는 리전 독립적입니다 —
 > DNS 해석·TCP 도달성·Template 16 토폴로지 diff는 리전에 따라 달라지지 않습니다 — 하지만
 > 리전을 맞추면 리전별 가용성 차이를 배제하고 재현을 동일 조건으로 유지할 수 있습니다.

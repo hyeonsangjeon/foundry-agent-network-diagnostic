@@ -7,7 +7,7 @@ Constraints:
   * Everything dynamic is HTML-escaped.
 
 Layout: header → final verdict banner → status summary → 6 color-coded check cards
-(Check 4 rendered as the official/customer/impact topology table) → copy-paste support block.
+(Check 4 rendered as the official/observed/impact topology table) → copy-paste support block.
 """
 
 from __future__ import annotations
@@ -80,7 +80,7 @@ def _topology_table(rows: list[dict[str, Any]]) -> str:
             f'<td>{_esc(r.get("official",""))}</td>'
             f'<td style="border-left:3px solid {vc}">'
             f'<strong style="color:{vc}">{_esc(r.get("verdict","").upper())}</strong> '
-            f'— {_esc(r.get("customer",""))}</td>'
+            f'— {_esc(r.get("observed",""))}</td>'
             f'<td class="impact">{_esc(r.get("impact",""))}</td>'
             "</tr>"
         )

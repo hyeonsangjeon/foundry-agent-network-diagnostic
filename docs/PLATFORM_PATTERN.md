@@ -38,7 +38,7 @@ The Data Proxy is a **managed host layer**. Two properties matter for diagnosis:
 
 > **Honesty rule:** there is no publicly documented, supported way to inject a custom DNS server or
 > custom Private Resolver directly into the Data Proxy. We therefore do **not** claim the Data Proxy
-> "never" uses customer DNS. Check 5 reports what was observed; the rest is "needs verification".
+> "never" uses this VNet's DNS. Check 5 reports what was observed; the rest is "needs verification".
 
 ## The official pattern (Template 16)
 
@@ -61,7 +61,7 @@ against.
 
 A very common BYO configuration — especially in regulated enterprises — looks different:
 
-| Dimension | Customer (divergent) | Network impact |
+| Dimension | Observed (divergent) | Network impact |
 | --- | --- | --- |
 | APIM exposure | Classic **internal VNet mode** (no inbound PE) | Publishes a VIP the managed resolver path may not resolve |
 | Backend DNS zone | **Custom private-only FQDN** (`*.<your-domain>`) | Lives in a zone that must be **explicitly linked** to the resolver the Data Proxy uses |
@@ -75,8 +75,8 @@ reachable; Checks 4–6 localize the break to the resolution stage on the manage
 
 ## Reusability
 
-This pattern is not specific to any one customer. The same "BYO VNet + private gateway + custom
-internal DNS" shape recurs across **telco, financial services, and manufacturing** customers who
+This pattern is not specific to any one environment. The same "BYO VNet + private gateway + custom
+internal DNS" shape recurs across **telco, financial services, and manufacturing** organizations who
 require strict egress control. The Template 16 diff and the 3-way DNS verdict are reusable for any
 of them — which is exactly why this asset is config-driven with zero hardcoded identifiers.
 

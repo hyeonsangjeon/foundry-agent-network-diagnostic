@@ -9,7 +9,7 @@ request actually *reach* APIM?
   * a request did reach APIM → the break is at/after APIM, not DNS resolution — which would
                                redirect the investigation away from the DNS hypothesis.
 
-Log access depends on customer permissions. We attempt an automatic Log Analytics read and
+Log access depends on your permissions. We attempt an automatic Log Analytics read and
 fall back to a manual-input path otherwise.
 
 READ-ONLY: a Log Analytics *query* only.

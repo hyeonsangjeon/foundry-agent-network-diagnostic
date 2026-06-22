@@ -2,11 +2,11 @@
 Mock scenario for ``--mock`` runs (no Azure, no network, no permissions needed).
 
 This models the canonical break this tool was built to diagnose, using ONLY
-placeholders (no real customer / FQDN / VIP / subscription):
+placeholders (no real identifiers / FQDN / VIP / subscription):
 
   BYO VNet Standard Agent, classic *internal-mode* APIM behind a *custom private-only
   FQDN*. The jump-box VM resolves the hostname fine, APIM is reachable, but the Foundry
-  Data Proxy call fails with "Name or service not known" — and neither the customer DNS
+  Data Proxy call fails with "Name or service not known" — and neither this VNet's DNS
   resolver nor the APIM gateway ever sees the request. Root cause points to the platform
   resolver path, not the backend.
 
@@ -46,8 +46,8 @@ MOCK_SCENARIO: dict[str, dict] = {
         "delegation_ok": True,
     },
     "check4": {
-        # customer's observed values, keyed by the Template 16 dimension keys
-        "customer": {
+        # observed values, keyed by the Template 16 dimension keys
+        "observed": {
             "apim_exposure": "Classic internal VNet mode (no inbound Private Endpoint)",
             "dns_zone": "custom private-only zone: *.contoso.example",
             "connection_category": "ModelGateway",

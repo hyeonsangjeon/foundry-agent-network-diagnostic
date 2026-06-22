@@ -42,7 +42,7 @@ from src.config_loader import ConfigError, load_config  # noqa: E402
 from src.report.html_renderer import write_html  # noqa: E402
 from src.report.json_writer import write_json  # noqa: E402
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 # Ordered registry: check number → (id, module).
 CHECKS = [
@@ -59,11 +59,11 @@ _VERDICT_MAP = {
         "DNS query never reached your resolver — the managed agent path appears to bypass this VNet DNS path",
         "No query for the backend FQDN was observed at the resolver during the agent call. "
         "Direction: platform supportability. Marked needs-verification — this does not prove "
-        "the Data Proxy never consults customer DNS; it shows none arrived in this window.",
+        "the Data Proxy never consults this VNet's DNS; it shows none arrived in this window.",
     ),
     "nxdomain_or_timeout": (
         "DNS query reached the resolver but failed (NXDOMAIN/timeout) — a DNS zone-link / forwarding issue",
-        "The query arrived but did not resolve. Direction: customer configuration — link the "
+        "The query arrived but did not resolve. Direction: environment configuration — link the "
         "backend's private DNS zone to the resolver path and verify conditional forwarding.",
     ),
     "answered_but_failed": (
@@ -120,7 +120,7 @@ def build_verdict(results_by_id: dict) -> dict:
         corroboration = "Check 6 unavailable (APIM log not provided) — corroborate manually."
 
     direction = "platform" if code in ("no_query", "answered_but_failed") else (
-        "customer" if code == "nxdomain_or_timeout" else "unknown"
+        "configuration" if code == "nxdomain_or_timeout" else "unknown"
     )
     return {"direction": direction, "headline": headline, "detail": detail, "corroboration": corroboration}
 

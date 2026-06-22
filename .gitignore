@@ -1,4 +1,4 @@
-# --- Customer values: NEVER commit a filled-in config ---
+# --- Sensitive values: NEVER commit a filled-in config ---
 config.json
 config.*.json
 !config.sample.json

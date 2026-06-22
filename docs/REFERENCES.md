@@ -46,5 +46,5 @@ This asset refers to it conceptually as *Template 16*.
   **inaccurate**.
 - There is **no publicly documented, supported method** to inject a custom DNS server or a custom
   Private Resolver directly into the managed Data Proxy. This asset therefore does **not** assert
-  that the Data Proxy "never" consults customer DNS; Check 5 reports only what was observed and
+  that the Data Proxy "never" consults this VNet's DNS; Check 5 reports only what was observed and
   marks the rest "needs verification".

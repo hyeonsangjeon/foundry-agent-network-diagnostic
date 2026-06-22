@@ -1,17 +1,17 @@
 """
 Check 5 — DNS query observation (★ root-cause heart, 3-way verdict).
 
-Looks at the customer's DNS resolver / Azure DNS Private Resolver query log to see whether
+Looks at this VNet's DNS resolver / Azure DNS Private Resolver query log to see whether
 a query for the backend FQDN actually *arrived* at the resolver around the time the agent
-made its call. This is the single most decisive signal for splitting "customer config" from
+made its call. This is the single most decisive signal for splitting "environment config" from
 "platform path":
 
   * no query arrived            → the managed Data Proxy is not using this VNet DNS path
                                   (points toward platform supportability — needs verification)
-  * query arrived + NXDOMAIN/timeout → DNS forwarding / zone-link problem (customer config)
+  * query arrived + NXDOMAIN/timeout → DNS forwarding / zone-link problem (environment config)
   * normal A answer yet it failed   → platform DNS cache / a different resolver path (platform)
 
-Log access depends on customer permissions. We attempt an automatic Log Analytics read and,
+Log access depends on your permissions. We attempt an automatic Log Analytics read and,
 if that is not possible, fall back to a manual-input path with the exact question to answer.
 
 READ-ONLY: a Log Analytics *query* only. We assert nothing we did not observe.
@@ -44,7 +44,7 @@ def _verdict_result(result: CheckResult, verdict: str, fqdn: str, evidence: dict
         result.summary = (
             f"No DNS query for {fqdn} arrived at the resolver in the window → the managed "
             f"Data Proxy is not using this VNet DNS path. Direction: platform supportability "
-            f"(needs verification — do not assert the Data Proxy never uses customer DNS)."
+            f"(needs verification — do not assert the Data Proxy never uses this VNet's DNS)."
         )
         result.remediation = (
             "Cross-check with Check 6 (APIM log). If APIM also saw no request, the break is "
@@ -54,7 +54,7 @@ def _verdict_result(result: CheckResult, verdict: str, fqdn: str, evidence: dict
         result.status = FAIL
         result.summary = (
             f"A query for {fqdn} arrived but returned NXDOMAIN/timeout → DNS forwarding / "
-            f"private DNS zone-link problem. Direction: customer configuration."
+            f"private DNS zone-link problem. Direction: environment configuration."
         )
         result.remediation = (
             "Link the backend's private DNS zone to the resolver path, and verify conditional "

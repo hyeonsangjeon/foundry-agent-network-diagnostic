@@ -8,6 +8,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/actions/workflows/ci.yml"><img src="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT">
   <img src="https://img.shields.io/badge/mode-read--only-1a7f37.svg" alt="Read-only">
@@ -24,7 +25,7 @@
 > - **What:** a read-only, one-shot diagnostic that isolates *where* a Standard Agent (BYO VNet)
 >   call to a private backend (private APIM / private endpoint) breaks — targeting DNS resolution
 >   failures on the BYO AI Gateway path.
-> - **Who:** customers running Foundry Agents in a locked-down VNet, and the engineers who support them.
+> - **Who:** teams running Foundry Agents in a locked-down VNet, and the engineers who support them.
 > - **How:** one command → six checks → a color-coded HTML dashboard with a clear root-cause verdict.
 
 ---
@@ -38,7 +39,7 @@
   (closed-network safe). Capture it and share it.
 - **Read-only and safe** — only reads configuration and logs you already have access to.
 - **Support-case-ready output** — a copy-paste summary block sized for a Microsoft support ticket.
-- **Reusable across BYO VNet customers** — config-driven, zero hardcoded identifiers.
+- **Reusable across BYO VNet environments** — config-driven, zero hardcoded identifiers.
 
 ## 🎯 What it diagnoses
 
@@ -128,9 +129,7 @@ end, or point it at an **environment you already have**. Both end at the same re
 | Creates Azure resources? | Yes (a small lab you own) | **No** — read-only |
 | Command | `bash deploy/deploy.sh` | `bash deploy/verify-existing.sh` |
 
-**Method 1 — deploy a reproduction lab, then verify** (progress-tracked, modeled on the
-[live-knowledge-sources](https://github.com/hyeonsangjeon/azure-ai-search-foundry-iq-live-knowledge-sources)
-deploy UX):
+**Method 1 — deploy a reproduction lab, then verify:**
 
 ```bash
 bash deploy/deploy.sh --what-if --location eastus          # free preview, creates nothing
@@ -157,7 +156,7 @@ bash deploy/verify-existing.sh        # prompts for endpoint + network settings,
 
 ```
 Foundry Agent Network Diagnostic
-  mode=mock  generated=2026-06-22T05:17:28Z  v1.0.0
+  mode=mock  generated=2026-06-22T05:17:28Z  v1.0.1
 ------------------------------------------------------------------------
             [PASS]  Hostname resolution (VM perspective)
             [PASS]  Backend reachability (network layer)
@@ -184,7 +183,7 @@ Foundry Agent Network Diagnostic
 | 5 | **DNS query observation** ★ | Did a query for the FQDN reach the resolver? 3-way verdict | FAIL = no query / failed query · root-cause direction |
 | 6 | **APIM gateway log correlation** | Did a request reach APIM in the same window? | FAIL = break is before APIM (DNS stage) |
 
-★ Check 5 is the heart: it splits **customer configuration** (DNS zone-link / forwarding) from the
+★ Check 5 is the heart: it splits **environment configuration** (DNS zone-link / forwarding) from the
 **platform path** (managed resolver behavior).
 
 ## 📊 Sample output
@@ -211,7 +210,7 @@ resolves that FQDN and reaches APIM on 443 — yet the agent call fails with `Na
 known`. Running this tool produces: Checks 1–2 **PASS** (VM + backend fine), Check 4 **WARN**
 (four dimensions diverge from Template 16), Checks 5–6 **FAIL** (no DNS query and no APIM request at
 repro time). Verdict: the break is **before the backend, at the resolution stage** — direction
-*platform path*, marked "needs verification". That is exactly what to bring to a support case.
+*platform path*, marked "needs verification".
 
 ## ❓ FAQ / Troubleshooting
 
@@ -238,7 +237,7 @@ repro time). Verdict: the break is **before the backend, at the resolution stage
 
 ## 📝 Changelog
 
-See [`CHANGELOG.md`](CHANGELOG.md). Current release: **v1.0.0**.
+See [`CHANGELOG.md`](CHANGELOG.md). Current release: **v1.0.1**.
 
 ## 👤 Author
 

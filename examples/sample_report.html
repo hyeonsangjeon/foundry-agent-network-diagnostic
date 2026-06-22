@@ -50,15 +50,15 @@
     <div class="meta">
       <span class="ro">READ-ONLY</span>
       &nbsp;mode: <strong>mock</strong>
-      &nbsp;·&nbsp; 2026-06-22T05:17:28.243468+00:00
-      &nbsp;·&nbsp; v0.1.0
+      &nbsp;·&nbsp; 2026-06-22T08:11:26.217959+00:00
+      &nbsp;·&nbsp; v1.0.1
     </div>
   </header>
 
   <section class="banner">
     <div class="lbl">Root-cause verdict</div>
     <h2>DNS query never reached your resolver — the managed agent path appears to bypass this VNet DNS path</h2>
-    <p>No query for the backend FQDN was observed at the resolver during the agent call. Direction: platform supportability. Marked needs-verification — this does not prove the Data Proxy never consults customer DNS; it shows none arrived in this window.</p>
+    <p>No query for the backend FQDN was observed at the resolver during the agent call. Direction: platform supportability. Marked needs-verification — this does not prove the Data Proxy never consults this VNet&#x27;s DNS; it shows none arrived in this window.</p>
     <p><em>Check 6 corroborates: no request reached APIM in the window — the break is before the backend.</em></p>
   </section>
 
@@ -95,7 +95,7 @@
   &quot;official_pattern&quot;: &quot;Standard Agent + Private APIM (Template 16): APIM via inbound Private Endpoint, hostname in privatelink.azure-api.net, Foundry connection category &#x27;ApiManagement&#x27;, agent subnet delegated to Microsoft.App/environments, backend private DNS zone linked to the resolver path the agent uses.&quot;,
   &quot;diverge_count&quot;: 4,
   &quot;unknown_count&quot;: 0
-}</pre></details><p class="fix"><strong>Suggested next step:</strong> Align the divergent dimensions with Template 16, or open a support case citing this diff (see docs/SUPPORT_CASE_GUIDE.md).</p></div><div class="card" style="border-left:6px solid #cf222e"><div class="card-head"><h3>DNS query observation (root-cause)</h3><span class="chip" style="color:#cf222e;background:#ffebe9;border:1px solid #cf222e33">FAIL</span></div><p class="summary">No DNS query for llm.contoso-apim.contoso.example arrived at the resolver in the window → the managed Data Proxy is not using this VNet DNS path. Direction: platform supportability (needs verification — do not assert the Data Proxy never uses customer DNS).</p><details class="evidence"><summary>Evidence (raw)</summary><pre>{
+}</pre></details><p class="fix"><strong>Suggested next step:</strong> Align the divergent dimensions with Template 16, or open a support case citing this diff (see docs/SUPPORT_CASE_GUIDE.md).</p></div><div class="card" style="border-left:6px solid #cf222e"><div class="card-head"><h3>DNS query observation (root-cause)</h3><span class="chip" style="color:#cf222e;background:#ffebe9;border:1px solid #cf222e33">FAIL</span></div><p class="summary">No DNS query for llm.contoso-apim.contoso.example arrived at the resolver in the window → the managed Data Proxy is not using this VNet DNS path. Direction: platform supportability (needs verification — do not assert the Data Proxy never uses this VNet&#x27;s DNS).</p><details class="evidence"><summary>Evidence (raw)</summary><pre>{
   &quot;source&quot;: &quot;Azure Private Resolver query log (mock)&quot;,
   &quot;query_window_utc&quot;: &quot;2026-06-18T02:10:00Z .. 2026-06-18T02:12:00Z&quot;,
   &quot;backend_fqdn&quot;: &quot;llm.contoso-apim.contoso.example&quot;,
@@ -111,8 +111,8 @@
   <section class="support">
     <h2>Support case summary (copy &amp; paste)</h2>
     <textarea class="support-box" readonly>Foundry Agent Network Diagnostic — Support Case Summary
-Generated (UTC): 2026-06-22T05:17:28.243468+00:00
-Tool version: 0.1.0  |  Mode: mock
+Generated (UTC): 2026-06-22T08:11:26.217959+00:00
+Tool version: 1.0.1  |  Mode: mock
 
 Environment (placeholders shown if values were not provided):
   Region:                  &lt;your-azure-region&gt;
@@ -122,7 +122,7 @@ Environment (placeholders shown if values were not provided):
   APIM mode:               internal
 
 Root-cause verdict: DNS query never reached your resolver — the managed agent path appears to bypass this VNet DNS path
-  No query for the backend FQDN was observed at the resolver during the agent call. Direction: platform supportability. Marked needs-verification — this does not prove the Data Proxy never consults customer DNS; it shows none arrived in this window.
+  No query for the backend FQDN was observed at the resolver during the agent call. Direction: platform supportability. Marked needs-verification — this does not prove the Data Proxy never consults this VNet&#x27;s DNS; it shows none arrived in this window.
   Check 6 corroborates: no request reached APIM in the window — the break is before the backend.
 
 Check results:
@@ -130,7 +130,7 @@ Check results:
   [ PASS  ] Backend reachability (network layer): TCP+TLS to 10.20.30.40:443 (SNI=llm.contoso-apim.contoso.example) succeeded; HTTPS status 200 — backend is alive and reachable.
   [ WARN  ] Foundry connection topology: Connection &#x27;byo-apim-gateway&#x27; category is &#x27;ModelGateway&#x27; (recommended &#x27;ApiManagement&#x27; for direct Azure APIM); agent subnet delegation = Microsoft.App/environments.
   [ WARN  ] Topology diff vs official Template 16: 4 of 5 dimensions diverge from the official private-APIM pattern (Template 16). These divergences explain why the managed resolver path can fail before the backend is reached.
-  [ FAIL  ] DNS query observation (root-cause): No DNS query for llm.contoso-apim.contoso.example arrived at the resolver in the window → the managed Data Proxy is not using this VNet DNS path. Direction: platform supportability (needs verification — do not assert the Data Proxy never uses customer DNS).
+  [ FAIL  ] DNS query observation (root-cause): No DNS query for llm.contoso-apim.contoso.example arrived at the resolver in the window → the managed Data Proxy is not using this VNet DNS path. Direction: platform supportability (needs verification — do not assert the Data Proxy never uses this VNet&#x27;s DNS).
   [ FAIL  ] APIM gateway log correlation: No request reached APIM in the window → the break is BEFORE APIM (DNS stage). This corroborates Check 5.
 
 Notes:

@@ -4,10 +4,10 @@ Official Foundry "Standard Agent + Private APIM" reference pattern (Template 16)
 This module encodes the *supported* topology that the Foundry samples publish as
 Template 16 (Standard Agent setup with a private Azure API Management gateway behind
 an inbound Private Endpoint, fronted by the ``privatelink.azure-api.net`` private DNS
-zone). Check 4 diffs a customer's actual configuration against these expectations.
+zone). Check 4 diffs the actual configuration against these expectations.
 
 We keep this as plain data (no Azure calls) so the diff is transparent and reviewable.
-Nothing here is customer specific. See ``docs/REFERENCES.md`` for the source links and
+Nothing here is environment specific. See ``docs/REFERENCES.md`` for the source links and
 ``docs/PLATFORM_PATTERN.md`` for the architectural explanation.
 
 Verification note (2026-06): "Foundry Agents support only public endpoints" is INACCURATE.
