@@ -85,6 +85,13 @@ bash deploy/deploy.sh --scenario lab --env-name agent-net-lab --location eastus 
 bash deploy/deploy.sh --scenario apim --env-name agent-apim --location eastus --yes
 ```
 
+> **Tip — match the customer's region.** For the most faithful reproduction, deploy the
+> lab in the **same region as the Foundry environment you're diagnosing** (e.g.
+> `--location koreacentral`). The diagnostic logic itself is region-independent — DNS
+> resolution, TCP reachability, and the Template 16 topology diff don't change by region —
+> but matching the region rules out region-specific availability quirks and keeps the repro
+> apples-to-apples.
+
 The script will, with a live progress bar and a timestamped log under `.deployment/`:
 
 1. check tools + `az login`;
