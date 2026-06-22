@@ -154,7 +154,7 @@ bash deploy/verify-existing.sh        # 엔드포인트 + 네트워크 설정을
 
 ```
 Foundry Agent Network Diagnostic
-  mode=mock  generated=2026-06-22T05:17:28Z  v0.3.0
+  mode=mock  generated=2026-06-22T05:17:28Z  v1.0.0
 ------------------------------------------------------------------------
             [PASS]  Hostname resolution (VM perspective)
             [PASS]  Backend reachability (network layer)
@@ -233,7 +233,7 @@ resolution 단계** — 방향은 *플랫폼 경로*, "확인 필요"로 표기.
 
 ## 📝 변경 이력 (Changelog)
 
-[`CHANGELOG.md`](CHANGELOG.md) 참조. 현재 릴리스: **v0.3.0**.
+[`CHANGELOG.md`](CHANGELOG.md) 참조. 현재 릴리스: **v1.0.0**.
 
 ## 👤 작성자 (Author)
 

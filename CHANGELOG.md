@@ -6,6 +6,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > 한국어 요약은 각 버전 하단의 **(한국어)** 블록을 참고하세요.
 
+## [1.0.0] - 2026-06-22
+
+**First stable release.** The tool is feature-complete, documented (EN/KO), and verified
+end-to-end against a real Foundry environment (Korea Central, external tenant). From this
+release on, the public surface is governed by [Semantic Versioning](https://semver.org/):
+breaking changes bump the major version.
+
+### Stable public surface
+- **Diagnostic CLI** — `python src/diagnose.py` flags `--config`, `--mock`, `--checks`,
+  `--out-dir`, `--no-color`.
+- **`config.json` schema** — keys consumed by the six checks (see `config.sample.json`).
+- **Check IDs 1–6** — Hostname resolution, Backend reachability, Foundry connection topology,
+  Template 16 topology diff, DNS query observation, APIM gateway log correlation. IDs and verdict
+  semantics are stable.
+- **Outputs** — self-contained `report.html`, machine-readable `report.json`, and the console
+  summary, all stamped with mode + version.
+- **Deploy automation** — `deploy/deploy.sh` (Method 1), `deploy/verify-existing.sh` (Method 2),
+  `deploy/destroy.sh`, with `--env-file` external-tenant isolation and tenant/subscription safety
+  rails.
+
+### Capabilities (consolidated)
+- **Read-only, six-step diagnosis** of a Foundry Standard Agent's BYO-VNet private network path
+  (Data Proxy → private APIM / private endpoint), targeting DNS-resolution failures, plus a
+  **Template 16 topology diff** that explains *why* the managed resolver path can break.
+- **Two ways to diagnose** — (1) deploy a small real reproduction lab, then verify; (2) verify an
+  already-deployed environment by feeding in its endpoints/config.
+- **Safe-by-default** — graceful degradation to manual fallbacks when customer log access is
+  missing; no resource is ever mutated.
+- **Bilingual docs** — `README` + `docs/` in English and Korean; `examples/` sample report.
+
+### Notes
+- The lab does not provision a Foundry account, so Foundry-specific checks (3, and the log-based
+  5/6) report **SKIPPED / manual** by design; the network-path checks (1, 2, 4) run for real.
+- No code change versus `0.3.0` behavior — this release blesses the verified `0.3.0` surface as
+  stable `1.0.0`.
+
+**(한국어)** **첫 정식 안정 릴리스.** 기능 완성 + 영/한 문서 + 실제 Foundry 환경(Korea Central,
+외부 테넌트)에서 처음부터 끝까지 검증 완료. 이번 릴리스부터 공개 인터페이스(진단 CLI 플래그,
+`config.json` 스키마, 체크 ID 1–6, `report.html/json` 포맷, 배포 스크립트 플래그)는
+**유의적 버전(SemVer)**으로 관리되며, 호환성을 깨는 변경은 메이저 버전을 올립니다. 동작은 검증된
+`0.3.0`과 동일하며, 그 표면을 안정 버전 `1.0.0`으로 확정합니다.
+
 ## [0.3.0] - 2026-06-22
 
 External-tenant deploy support + verified live run.
@@ -123,6 +165,7 @@ Initial public release.
 알려진 한계: Check 5/6 로그 자동 조회는 고객 권한에 의존(없으면 수동 fallback), Data Proxy 내부 직접 관측 불가
 (주변 신호 기반 추론), SDK/Playground A/B는 가이드 제공. 검증 기준일 2026-06.
 
+[1.0.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v1.0.0
 [0.3.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v0.3.0
 [0.2.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v0.2.0
 [0.1.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v0.1.0

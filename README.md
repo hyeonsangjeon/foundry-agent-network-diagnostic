@@ -157,7 +157,7 @@ bash deploy/verify-existing.sh        # prompts for endpoint + network settings,
 
 ```
 Foundry Agent Network Diagnostic
-  mode=mock  generated=2026-06-22T05:17:28Z  v0.3.0
+  mode=mock  generated=2026-06-22T05:17:28Z  v1.0.0
 ------------------------------------------------------------------------
             [PASS]  Hostname resolution (VM perspective)
             [PASS]  Backend reachability (network layer)
@@ -238,7 +238,7 @@ repro time). Verdict: the break is **before the backend, at the resolution stage
 
 ## 📝 Changelog
 
-See [`CHANGELOG.md`](CHANGELOG.md). Current release: **v0.3.0**.
+See [`CHANGELOG.md`](CHANGELOG.md). Current release: **v1.0.0**.
 
 ## 👤 Author
 
