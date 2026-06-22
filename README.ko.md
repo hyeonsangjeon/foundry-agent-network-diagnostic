@@ -79,6 +79,9 @@ flowchart LR
 
 ## 🚀 빠른 시작 (Quickstart)
 
+> 🟢 **처음이세요?** 한 줄씩 복붙하는 단계별 가이드는
+> **[`docs/QUICKSTART.ko.md`](docs/QUICKSTART.ko.md)** 부터 시작하세요 — 첫 데모는 Azure가 필요 없습니다.
+
 ```bash
 # 1. 클론 및 설치 (진단 본체는 외부 의존성 불필요)
 git clone https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic.git
@@ -224,6 +227,7 @@ resolution 단계** — 방향은 *플랫폼 경로*, "확인 필요"로 표기.
 
 ## 📚 참고 자료 (References)
 
+- [`docs/QUICKSTART.ko.md`](docs/QUICKSTART.ko.md) — 처음 사용하는 분을 위한 단계별 로컬 실행 가이드.
 - [`docs/REFERENCES.md`](docs/REFERENCES.md) — **Template 16** baseline을 정의하는 공식 Microsoft Learn
   문서 및 foundry-samples의 network-secured Standard Agent(private-APIM) 템플릿.
 - [`docs/PLATFORM_PATTERN.md`](docs/PLATFORM_PATTERN.md) — Foundry Agent 경로 모델과 internal-mode +

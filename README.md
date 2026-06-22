@@ -81,6 +81,9 @@ path**. See [`docs/PLATFORM_PATTERN.md`](docs/PLATFORM_PATTERN.md) for the full 
 
 ## 🚀 Quickstart
 
+> 🟢 **New here?** For a slower, copy-paste, step-by-step walkthrough, start with
+> **[`docs/QUICKSTART.md`](docs/QUICKSTART.md)** — no Azure needed for the first demo.
+
 ```bash
 # 1. Clone & install (no third-party deps required for the diagnostic itself)
 git clone https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic.git
@@ -228,6 +231,7 @@ repro time). Verdict: the break is **before the backend, at the resolution stage
 
 ## 📚 References
 
+- [`docs/QUICKSTART.md`](docs/QUICKSTART.md) — a step-by-step, run-it-locally guide for first-time users.
 - [`docs/REFERENCES.md`](docs/REFERENCES.md) — official Microsoft Learn pages and the foundry-samples
   network-secured Standard Agent (private-APIM) templates that define the **Template 16** baseline.
 - [`docs/PLATFORM_PATTERN.md`](docs/PLATFORM_PATTERN.md) — the Foundry Agent path model and why
