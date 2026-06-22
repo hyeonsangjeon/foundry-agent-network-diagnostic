@@ -1,0 +1,49 @@
+{
+  "_help": {
+    "about": "Copy this file to config.json, then replace every <...> placeholder with your environment values. config.json is gitignored so your values are never committed.",
+    "required": [
+      "subscription_id",
+      "resource_group",
+      "region",
+      "foundry_account",
+      "foundry_project",
+      "backend_fqdn",
+      "expected_private_vip"
+    ],
+    "optional": [
+      "agent_subnet_id",
+      "pe_subnet_id",
+      "apim_resource_id",
+      "apim_mode",
+      "dns_resolver_log",
+      "apim_gateway_log"
+    ],
+    "apim_mode_values": ["internal", "external", "PE", "unknown"],
+    "notes": "Keys starting with '_' are documentation only and are ignored by the tool. Omit or null the *_log objects to run Check 5/6 in manual-input fallback mode."
+  },
+
+  "subscription_id": "<your-subscription-guid>",
+  "resource_group": "<your-resource-group>",
+  "region": "<your-azure-region>",
+
+  "foundry_account": "<your-foundry-account-name>",
+  "foundry_project": "<your-foundry-project-name>",
+
+  "agent_subnet_id": "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/virtualNetworks/<your-vnet>/subnets/<your-agent-subnet>",
+  "pe_subnet_id": "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Network/virtualNetworks/<your-vnet>/subnets/<your-pe-subnet>",
+
+  "backend_fqdn": "llm.<your-apim>.<your-domain>",
+  "expected_private_vip": "10.x.x.x",
+
+  "apim_resource_id": "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ApiManagement/service/<your-apim>",
+  "apim_mode": "internal",
+
+  "dns_resolver_log": {
+    "_note": "Optional. Log Analytics workspace that captures DNS/Private Resolver queries. Omit to use manual fallback for Check 5.",
+    "workspace_id": "<optional-log-analytics-workspace-guid>"
+  },
+  "apim_gateway_log": {
+    "_note": "Optional. Log Analytics workspace that captures APIM gateway requests. Omit to use manual fallback for Check 6.",
+    "workspace_id": "<optional-log-analytics-workspace-guid>"
+  }
+}

@@ -1,0 +1,46 @@
+# --- Customer values: NEVER commit a filled-in config ---
+config.json
+config.*.json
+!config.sample.json
+
+# --- Generated diagnostic outputs ---
+report.html
+report.json
+report.*.html
+report.*.json
+out/
+output/
+
+# --- Local planning / spec / result notes (private, do not commit) ---
+plan.md
+plan.*.md
+task.md
+task.*.md
+tasks.md
+result.md
+result.*.md
+results.md
+BUILD_SPEC.md
+*_spec.md
+*-spec.md
+*.local.md
+specs/
+_specs/
+scratch/
+_scratch/
+
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/
+*.log
+*.tmp

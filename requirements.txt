@@ -1,0 +1,15 @@
+# foundry-agent-network-diagnostic
+# ---------------------------------------------------------------------------
+# The core diagnostic (src/diagnose.py + the 6 checks + HTML/JSON report)
+# runs on the Python 3.10+ STANDARD LIBRARY ONLY. No third-party packages are
+# required, so it works inside closed/air-gapped networks with no PyPI access.
+#
+# Azure queries are performed by shelling out to the Azure CLI (`az`), which you
+# authenticate separately with `az login`. There is nothing to pip-install for
+# the diagnostic itself.
+# ---------------------------------------------------------------------------
+
+# Optional — only needed if you run the SDK vs Playground A/B helper
+# (examples/sdk_ab_test.py). Safe to skip for the diagnostic itself.
+# azure-identity>=1.16.0
+# azure-ai-projects>=1.0.0b4

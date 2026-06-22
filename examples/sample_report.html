@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundry Agent Network Diagnostic — Report</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+         color:#1f2328; background:#f6f8fa; line-height:1.5; }
+  .wrap { max-width:980px; margin:0 auto; padding:28px 20px 64px; }
+  header.top { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; }
+  header.top h1 { font-size:20px; margin:0; }
+  .meta { color:#57606a; font-size:13px; }
+  .banner { margin:18px 0 22px; padding:18px 20px; border-radius:12px;
+            background:#fff0ef; border:1px solid #cf222e55; }
+  .banner .lbl { font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#cf222e; font-weight:700; }
+  .banner h2 { margin:6px 0 6px; font-size:19px; color:#cf222e; }
+  .banner p { margin:4px 0; }
+  .counts { display:flex; gap:14px; flex-wrap:wrap; margin:0 0 18px; font-weight:600; font-size:13px; }
+  .count { background:#fff; border:1px solid #d0d7de; border-radius:20px; padding:3px 12px; }
+  .card { background:#fff; border:1px solid #d0d7de; border-radius:12px; padding:16px 18px; margin:0 0 14px; }
+  .card-head { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .card-head h3 { margin:0; font-size:15.5px; }
+  .chip { font-size:12px; font-weight:700; padding:2px 10px; border-radius:20px; white-space:nowrap; }
+  .summary { margin:8px 0 6px; }
+  .fix { margin:8px 0 0; font-size:14px; color:#1f2328; background:#f6f8fa; border-radius:8px; padding:8px 10px; }
+  details.evidence { margin-top:8px; }
+  details.evidence summary { cursor:pointer; color:#0969da; font-size:13px; }
+  pre { background:#0d1117; color:#e6edf3; padding:12px; border-radius:8px; overflow:auto; font-size:12px;
+        font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  table.topo { width:100%; border-collapse:collapse; margin:10px 0 4px; font-size:13px; }
+  table.topo th, table.topo td { text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid #eaeef2; }
+  table.topo th { background:#f6f8fa; font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:#57606a; }
+  table.topo td.dim { font-weight:600; white-space:nowrap; }
+  table.topo td.impact { color:#57606a; }
+  .support h2 { font-size:16px; margin:26px 0 8px; }
+  textarea.support-box { width:100%; min-height:200px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+        font-size:12.5px; padding:12px; border:1px solid #d0d7de; border-radius:10px; background:#fff; color:#1f2328; }
+  footer { color:#57606a; font-size:12px; margin-top:28px; text-align:center; }
+  .ro { display:inline-block; background:#e6f4ea; color:#1a7f37; border:1px solid #1a7f3733;
+        border-radius:20px; padding:2px 10px; font-size:12px; font-weight:700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Foundry Agent Network Diagnostic</h1>
+    <div class="meta">
+      <span class="ro">READ-ONLY</span>
+      &nbsp;mode: <strong>mock</strong>
+      &nbsp;·&nbsp; 2026-06-22T05:17:28.243468+00:00
+      &nbsp;·&nbsp; v0.1.0
+    </div>
+  </header>
+
+  <section class="banner">
+    <div class="lbl">Root-cause verdict</div>
+    <h2>DNS query never reached your resolver — the managed agent path appears to bypass this VNet DNS path</h2>
+    <p>No query for the backend FQDN was observed at the resolver during the agent call. Direction: platform supportability. Marked needs-verification — this does not prove the Data Proxy never consults customer DNS; it shows none arrived in this window.</p>
+    <p><em>Check 6 corroborates: no request reached APIM in the window — the break is before the backend.</em></p>
+  </section>
+
+  <div class="counts"><span class="count" style="color:#1a7f37">2 PASS</span><span class="count" style="color:#9a6700">2 WARN</span><span class="count" style="color:#cf222e">2 FAIL</span></div>
+
+  <div class="card" style="border-left:6px solid #1a7f37"><div class="card-head"><h3>Hostname resolution (VM perspective)</h3><span class="chip" style="color:#1a7f37;background:#e6f4ea;border:1px solid #1a7f3733">PASS</span></div><p class="summary">VM resolves llm.contoso-apim.contoso.example to 10.20.30.40 (expected 10.20.30.40) — baseline OK.</p><details class="evidence"><summary>Evidence (raw)</summary><pre>{
+  &quot;resolved_ip&quot;: &quot;10.20.30.40&quot;,
+  &quot;expected_vip&quot;: &quot;10.20.30.40&quot;,
+  &quot;socket_ok&quot;: true,
+  &quot;dig_answer&quot;: &quot;llm.contoso-apim.contoso.example. 30 IN A 10.20.30.40&quot;,
+  &quot;resolv_conf&quot;: [
+    &quot;nameserver 10.20.0.10&quot;,
+    &quot;search internal.contoso.example&quot;
+  ],
+  &quot;custom_dns_servers&quot;: [
+    &quot;10.20.0.10&quot;
+  ],
+  &quot;match&quot;: true
+}</pre></details></div><div class="card" style="border-left:6px solid #1a7f37"><div class="card-head"><h3>Backend reachability (network layer)</h3><span class="chip" style="color:#1a7f37;background:#e6f4ea;border:1px solid #1a7f3733">PASS</span></div><p class="summary">TCP+TLS to 10.20.30.40:443 (SNI=llm.contoso-apim.contoso.example) succeeded; HTTPS status 200 — backend is alive and reachable.</p><details class="evidence"><summary>Evidence (raw)</summary><pre>{
+  &quot;vip&quot;: &quot;10.20.30.40&quot;,
+  &quot;port&quot;: 443,
+  &quot;tcp_connect_ok&quot;: true,
+  &quot;tls_handshake_ok&quot;: true,
+  &quot;tls_sni&quot;: &quot;llm.contoso-apim.contoso.example&quot;,
+  &quot;peer_cert_subject&quot;: &quot;CN=*.contoso.example&quot;,
+  &quot;https_status&quot;: 200
+}</pre></details></div><div class="card" style="border-left:6px solid #9a6700"><div class="card-head"><h3>Foundry connection topology</h3><span class="chip" style="color:#9a6700;background:#fff8e1;border:1px solid #9a670033">WARN</span></div><p class="summary">Connection &#x27;byo-apim-gateway&#x27; category is &#x27;ModelGateway&#x27; (recommended &#x27;ApiManagement&#x27; for direct Azure APIM); agent subnet delegation = Microsoft.App/environments.</p><details class="evidence"><summary>Evidence (raw)</summary><pre>{
+  &quot;connection_name&quot;: &quot;byo-apim-gateway&quot;,
+  &quot;connection_category&quot;: &quot;ModelGateway&quot;,
+  &quot;recommended_category&quot;: &quot;ApiManagement&quot;,
+  &quot;agent_subnet_delegation&quot;: &quot;Microsoft.App/environments&quot;,
+  &quot;delegation_ok&quot;: true
+}</pre></details></div><div class="card" style="border-left:6px solid #9a6700"><div class="card-head"><h3>Topology diff vs official Template 16</h3><span class="chip" style="color:#9a6700;background:#fff8e1;border:1px solid #9a670033">WARN</span></div><p class="summary">4 of 5 dimensions diverge from the official private-APIM pattern (Template 16). These divergences explain why the managed resolver path can fail before the backend is reached.</p><table class="topo"><thead><tr><th>Dimension</th><th>Official (Template 16)</th><th>Your environment</th><th>Impact</th></tr></thead><tbody><tr><td class="dim">APIM exposure</td><td>Inbound Private Endpoint on the APIM service</td><td style="border-left:3px solid #cf222e"><strong style="color:#cf222e">DIVERGE</strong> — Classic internal VNet mode (no inbound Private Endpoint)</td><td class="impact">Template 16 reaches APIM through a Private Endpoint whose private IP is registered in a private DNS zone the platform resolver can see. Classic internal-VNet mode publishes a VIP that the managed resolver path may not resolve.</td></tr><tr><td class="dim">Backend DNS zone</td><td>privatelink.azure-api.net (Azure-managed private DNS zone)</td><td style="border-left:3px solid #cf222e"><strong style="color:#cf222e">DIVERGE</strong> — custom private-only zone: *.contoso.example</td><td class="impact">The official pattern resolves the APIM hostname inside the privatelink.azure-api.net zone. A custom private-only FQDN (e.g. *.&lt;your-domain&gt;) lives in a zone that must be explicitly linked to the resolver path the Data Proxy uses — otherwise resolution fails before the backend is ever reached.</td></tr><tr><td class="dim">Foundry connection category</td><td>ApiManagement</td><td style="border-left:3px solid #cf222e"><strong style="color:#cf222e">DIVERGE</strong> — ModelGateway</td><td class="impact">Connecting a direct Azure APIM gateway with the ApiManagement category is the documented path. A generic ModelGateway/custom connection can change how the hostname is presented to the Data Proxy.</td></tr><tr><td class="dim">Agent subnet delegation</td><td>Delegated to Microsoft.App/environments</td><td style="border-left:3px solid #1a7f37"><strong style="color:#1a7f37">MATCH</strong> — Microsoft.App/environments</td><td class="impact">The managed agent (Data Proxy) subnet must be delegated to Microsoft.App/environments so the platform can place its managed hosts and consume delegated IPs on the expected network path.</td></tr><tr><td class="dim">Private DNS zone link to resolver path</td><td>Backend private DNS zone is linked to the VNet/resolver the agent path uses</td><td style="border-left:3px solid #cf222e"><strong style="color:#cf222e">DIVERGE</strong> — Not linked to the resolver path the managed agent uses (unverified — confirm)</td><td class="impact">Even a correct zone fails if it is not linked to the resolver the managed path consults. This is the single most common break in BYO custom-FQDN setups.</td></tr></tbody></table><details class="evidence"><summary>Evidence (raw)</summary><pre>{
+  &quot;official_pattern&quot;: &quot;Standard Agent + Private APIM (Template 16): APIM via inbound Private Endpoint, hostname in privatelink.azure-api.net, Foundry connection category &#x27;ApiManagement&#x27;, agent subnet delegated to Microsoft.App/environments, backend private DNS zone linked to the resolver path the agent uses.&quot;,
+  &quot;diverge_count&quot;: 4,
+  &quot;unknown_count&quot;: 0
+}</pre></details><p class="fix"><strong>Suggested next step:</strong> Align the divergent dimensions with Template 16, or open a support case citing this diff (see docs/SUPPORT_CASE_GUIDE.md).</p></div><div class="card" style="border-left:6px solid #cf222e"><div class="card-head"><h3>DNS query observation (root-cause)</h3><span class="chip" style="color:#cf222e;background:#ffebe9;border:1px solid #cf222e33">FAIL</span></div><p class="summary">No DNS query for llm.contoso-apim.contoso.example arrived at the resolver in the window → the managed Data Proxy is not using this VNet DNS path. Direction: platform supportability (needs verification — do not assert the Data Proxy never uses customer DNS).</p><details class="evidence"><summary>Evidence (raw)</summary><pre>{
+  &quot;source&quot;: &quot;Azure Private Resolver query log (mock)&quot;,
+  &quot;query_window_utc&quot;: &quot;2026-06-18T02:10:00Z .. 2026-06-18T02:12:00Z&quot;,
+  &quot;backend_fqdn&quot;: &quot;llm.contoso-apim.contoso.example&quot;,
+  &quot;query_arrived&quot;: false,
+  &quot;response_code&quot;: null,
+  &quot;verdict&quot;: &quot;no_query&quot;
+}</pre></details><p class="fix"><strong>Suggested next step:</strong> Cross-check with Check 6 (APIM log). If APIM also saw no request, the break is before the backend. Capture this for a support case (docs/SUPPORT_CASE_GUIDE.md).</p></div><div class="card" style="border-left:6px solid #cf222e"><div class="card-head"><h3>APIM gateway log correlation</h3><span class="chip" style="color:#cf222e;background:#ffebe9;border:1px solid #cf222e33">FAIL</span></div><p class="summary">No request reached APIM in the window → the break is BEFORE APIM (DNS stage). This corroborates Check 5.</p><details class="evidence"><summary>Evidence (raw)</summary><pre>{
+  &quot;source&quot;: &quot;APIM gateway requests (mock)&quot;,
+  &quot;query_window_utc&quot;: &quot;2026-06-18T02:10:00Z .. 2026-06-18T02:12:00Z&quot;,
+  &quot;request_arrived&quot;: false
+}</pre></details></div>
+
+  <section class="support">
+    <h2>Support case summary (copy &amp; paste)</h2>
+    <textarea class="support-box" readonly>Foundry Agent Network Diagnostic — Support Case Summary
+Generated (UTC): 2026-06-22T05:17:28.243468+00:00
+Tool version: 0.1.0  |  Mode: mock
+
+Environment (placeholders shown if values were not provided):
+  Region:                  &lt;your-azure-region&gt;
+  Foundry account/project: contoso-foundry / contoso-project
+  Backend FQDN:            llm.contoso-apim.contoso.example
+  Expected private VIP:    10.20.30.40
+  APIM mode:               internal
+
+Root-cause verdict: DNS query never reached your resolver — the managed agent path appears to bypass this VNet DNS path
+  No query for the backend FQDN was observed at the resolver during the agent call. Direction: platform supportability. Marked needs-verification — this does not prove the Data Proxy never consults customer DNS; it shows none arrived in this window.
+  Check 6 corroborates: no request reached APIM in the window — the break is before the backend.
+
+Check results:
+  [ PASS  ] Hostname resolution (VM perspective): VM resolves llm.contoso-apim.contoso.example to 10.20.30.40 (expected 10.20.30.40) — baseline OK.
+  [ PASS  ] Backend reachability (network layer): TCP+TLS to 10.20.30.40:443 (SNI=llm.contoso-apim.contoso.example) succeeded; HTTPS status 200 — backend is alive and reachable.
+  [ WARN  ] Foundry connection topology: Connection &#x27;byo-apim-gateway&#x27; category is &#x27;ModelGateway&#x27; (recommended &#x27;ApiManagement&#x27; for direct Azure APIM); agent subnet delegation = Microsoft.App/environments.
+  [ WARN  ] Topology diff vs official Template 16: 4 of 5 dimensions diverge from the official private-APIM pattern (Template 16). These divergences explain why the managed resolver path can fail before the backend is reached.
+  [ FAIL  ] DNS query observation (root-cause): No DNS query for llm.contoso-apim.contoso.example arrived at the resolver in the window → the managed Data Proxy is not using this VNet DNS path. Direction: platform supportability (needs verification — do not assert the Data Proxy never uses customer DNS).
+  [ FAIL  ] APIM gateway log correlation: No request reached APIM in the window → the break is BEFORE APIM (DNS stage). This corroborates Check 5.
+
+Notes:
+  - This tool is READ-ONLY; no Azure resources were created/modified/deleted.
+  - Items marked &#x27;needs verification&#x27; are not asserted as fact.
+  - See docs/SUPPORT_CASE_GUIDE.md for what to include in an MS support case.</textarea>
+  </section>
+
+  <footer>
+    Generated by foundry-agent-network-diagnostic · read-only · no resources were modified.<br>
+    Author: Hyeonsang Jeon · Microsoft Global Black Belt AI Apps
+  </footer>
+</div>
+</body>
+</html>
