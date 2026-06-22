@@ -14,16 +14,13 @@
 set -Eeuo pipefail
 
 # ---------------------------------------------------------------------------
-# Defaults / settings
+# CLI overrides (empty unless passed). Resolution precedence:
+#   CLI flag  >  --env-file value  >  built-in default
 # ---------------------------------------------------------------------------
-SCENARIO="lab"
-ENV_NAME="agent-net-lab"
-LOCATION="eastus"
-RESOURCE_GROUP=""
-NAME_PREFIX=""
-SUBSCRIPTION=""
-CUSTOM_ZONE="internal.agentlab.example"
-CUSTOM_HOST="llm"
+CLI_SCENARIO=""; CLI_ENV_NAME=""; CLI_LOCATION=""; CLI_RESOURCE_GROUP=""
+CLI_NAME_PREFIX=""; CLI_SUBSCRIPTION=""; CLI_TENANT=""
+CLI_CUSTOM_ZONE=""; CLI_CUSTOM_HOST=""
+ENV_FILE=""
 DEPLOY_JUMP_VM=false
 JUMP_VM_PASSWORD="${JUMP_VM_PASSWORD:-}"
 WHATIF_ONLY=false
@@ -46,6 +43,12 @@ Usage:
 Provisions a reproduction lab, then runs the read-only diagnostic against it.
 
 Options:
+  --env-file <path>        Load settings from a file (e.g. .env.external.local).
+                           Honors EXTERNAL_AZURE_CONFIG_DIR to use an ISOLATED az
+                           login (your default/internal az session is untouched),
+                           EXTERNAL_TENANT_ID, SUBSCRIPTION, LOCATION, SCENARIO,
+                           ENV_NAME, and the safety rails E2E_EXPECTED_TENANT_ID /
+                           E2E_EXPECTED_SUBSCRIPTION_NAME.
   --scenario <lab|apim>    Reproduction scenario.
                            lab  = VNet + delegated agent subnet + private endpoint
                                   backend (fast, cheap, ~2-3 min). Default.
@@ -56,6 +59,8 @@ Options:
   --resource-group <name>  Resource group (default: rg-<env-name>).
   --name-prefix <prefix>   Resource name prefix (3-12 lowercase). Default: auto.
   --subscription <id|name> Target subscription (default: current az context).
+  --tenant <id>            Expected tenant ID. Deploy aborts if the active login
+                           is a different tenant (guards against wrong-tenant deploys).
   --custom-zone <zone>     Custom private DNS zone (default: internal.agentlab.example).
   --custom-host <label>    Backend host label under the zone (default: llm).
   --deploy-jump-vm         Also deploy a small in-network jump VM (needs --vm-password).
@@ -68,21 +73,24 @@ Options:
 
 Examples:
   bash deploy/deploy.sh --what-if
-  bash deploy/deploy.sh --scenario lab --location koreacentral --yes
+  bash deploy/deploy.sh --env-file .env.external.local --what-if
+  bash deploy/deploy.sh --env-file .env.external.local --scenario lab --yes
   bash deploy/deploy.sh --scenario apim --env-name agent-apim --yes
 USAGE
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --scenario) SCENARIO="${2:-}"; shift 2 ;;
-    --env-name) ENV_NAME="${2:-}"; shift 2 ;;
-    --location) LOCATION="${2:-}"; shift 2 ;;
-    --resource-group) RESOURCE_GROUP="${2:-}"; shift 2 ;;
-    --name-prefix) NAME_PREFIX="${2:-}"; shift 2 ;;
-    --subscription) SUBSCRIPTION="${2:-}"; shift 2 ;;
-    --custom-zone) CUSTOM_ZONE="${2:-}"; shift 2 ;;
-    --custom-host) CUSTOM_HOST="${2:-}"; shift 2 ;;
+    --env-file) ENV_FILE="${2:-}"; shift 2 ;;
+    --scenario) CLI_SCENARIO="${2:-}"; shift 2 ;;
+    --env-name) CLI_ENV_NAME="${2:-}"; shift 2 ;;
+    --location) CLI_LOCATION="${2:-}"; shift 2 ;;
+    --resource-group) CLI_RESOURCE_GROUP="${2:-}"; shift 2 ;;
+    --name-prefix) CLI_NAME_PREFIX="${2:-}"; shift 2 ;;
+    --subscription) CLI_SUBSCRIPTION="${2:-}"; shift 2 ;;
+    --tenant) CLI_TENANT="${2:-}"; shift 2 ;;
+    --custom-zone) CLI_CUSTOM_ZONE="${2:-}"; shift 2 ;;
+    --custom-host) CLI_CUSTOM_HOST="${2:-}"; shift 2 ;;
     --deploy-jump-vm) DEPLOY_JUMP_VM=true; shift ;;
     --vm-password) JUMP_VM_PASSWORD="${2:-}"; shift 2 ;;
     --what-if) WHATIF_ONLY=true; shift ;;
@@ -93,6 +101,38 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
   esac
 done
+
+# Load the env file (if any) BEFORE resolving settings. It may set SCENARIO,
+# ENV_NAME, LOCATION, SUBSCRIPTION, RESOURCE_GROUP, NAME_PREFIX, CUSTOM_ZONE,
+# CUSTOM_HOST, EXTERNAL_TENANT_ID, EXTERNAL_AZURE_CONFIG_DIR, and the E2E_* rails.
+if [[ -n "$ENV_FILE" ]]; then
+  if [[ ! -f "$ENV_FILE" ]]; then
+    echo "Error: --env-file not found: $ENV_FILE" >&2
+    exit 1
+  fi
+  set -a
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
+  set +a
+  # Isolate the Azure CLI profile so the default/internal login is never touched.
+  if [[ -n "${EXTERNAL_AZURE_CONFIG_DIR:-}" ]]; then
+    _az_cfg="${EXTERNAL_AZURE_CONFIG_DIR/#\~/$HOME}"
+    mkdir -p "$_az_cfg"
+    export AZURE_CONFIG_DIR="$_az_cfg"
+  fi
+fi
+
+# Resolve final settings: CLI > env file > default.
+SCENARIO="${CLI_SCENARIO:-${SCENARIO:-lab}}"
+ENV_NAME="${CLI_ENV_NAME:-${ENV_NAME:-agent-net-lab}}"
+LOCATION="${CLI_LOCATION:-${LOCATION:-eastus}}"
+RESOURCE_GROUP="${CLI_RESOURCE_GROUP:-${RESOURCE_GROUP:-}}"
+NAME_PREFIX="${CLI_NAME_PREFIX:-${NAME_PREFIX:-}}"
+SUBSCRIPTION="${CLI_SUBSCRIPTION:-${SUBSCRIPTION:-}}"
+CUSTOM_ZONE="${CLI_CUSTOM_ZONE:-${CUSTOM_ZONE:-internal.agentlab.example}}"
+CUSTOM_HOST="${CLI_CUSTOM_HOST:-${CUSTOM_HOST:-llm}}"
+EXPECTED_TENANT="${CLI_TENANT:-${EXTERNAL_TENANT_ID:-${E2E_EXPECTED_TENANT_ID:-}}}"
+EXPECTED_SUBSCRIPTION_NAME="${E2E_EXPECTED_SUBSCRIPTION_NAME:-}"
 
 case "$SCENARIO" in
   lab|apim) ;;
@@ -238,22 +278,44 @@ log "Scenario:        ${SCENARIO}"
 log "Resource group:  ${RESOURCE_GROUP}"
 log "Location:        ${LOCATION}"
 log "Backend FQDN:    ${CUSTOM_HOST}.${CUSTOM_ZONE}"
-[[ "$WHATIF_ONLY" == true ]] && log "Mode:            WHAT-IF (no resources will be created)"
+[[ -n "${AZURE_CONFIG_DIR:-}" ]] && log "az profile:      ${AZURE_CONFIG_DIR} (isolated)"
+[[ -n "$EXPECTED_TENANT" ]] && log "Expected tenant: ${EXPECTED_TENANT}"
+[[ "$WHATIF_ONLY" == true ]] && log "Mode:            WHAT-IF (preview; no billable resources are created)"
 
 # --- Step 1: preflight tools + login ---
 step "Preflight: tools and Azure login"
 require_command az "Install: https://learn.microsoft.com/cli/azure/install-azure-cli"
 require_command python3 "Install Python 3.10+ from https://www.python.org/downloads/"
 if ! az account show >/dev/null 2>&1; then
-  fail "You are not logged in to Azure."
-  log "Run: az login"
+  fail "You are not logged in to Azure (profile: ${AZURE_CONFIG_DIR:-default})."
+  if [[ -n "${AZURE_CONFIG_DIR:-}" ]]; then
+    log "Log in to this isolated profile, e.g.:"
+    log "  AZURE_CONFIG_DIR=${AZURE_CONFIG_DIR} az login --tenant ${EXPECTED_TENANT:-<tenant-id>}"
+  else
+    log "Run: az login"
+  fi
   exit 1
 fi
 if [[ -n "$SUBSCRIPTION" ]]; then
   run_cmd "Select subscription ${SUBSCRIPTION}" az account set --subscription "$SUBSCRIPTION"
 fi
-capture_cmd "Read current subscription" az account show --query "{name:name,id:id,user:user.name}" -o json
+capture_cmd "Read current subscription" az account show --query "{name:name,id:id,tenantId:tenantId,user:user.name}" -o json
 log "$CAPTURE"
+
+# Safety rails: refuse to deploy if the active login is not the expected tenant/sub.
+ACTIVE_TENANT="$(az account show --query tenantId -o tsv 2>/dev/null || true)"
+ACTIVE_SUB_NAME="$(az account show --query name -o tsv 2>/dev/null || true)"
+if [[ -n "$EXPECTED_TENANT" && "$ACTIVE_TENANT" != "$EXPECTED_TENANT" ]]; then
+  fail "Active tenant ($ACTIVE_TENANT) does not match expected tenant ($EXPECTED_TENANT)."
+  log "Refusing to deploy to the wrong tenant. Check --tenant / EXTERNAL_TENANT_ID and your login."
+  exit 1
+fi
+if [[ -n "$EXPECTED_SUBSCRIPTION_NAME" && "$ACTIVE_SUB_NAME" != "$EXPECTED_SUBSCRIPTION_NAME" ]]; then
+  fail "Active subscription ($ACTIVE_SUB_NAME) does not match expected ($EXPECTED_SUBSCRIPTION_NAME)."
+  log "Refusing to deploy to the wrong subscription. Check SUBSCRIPTION / E2E_EXPECTED_SUBSCRIPTION_NAME."
+  exit 1
+fi
+[[ -n "$EXPECTED_TENANT" ]] && ok "Tenant verified: $ACTIVE_TENANT"
 
 # --- Step 2: resolve settings ---
 step "Resolve deployment settings"
@@ -279,6 +341,8 @@ if [[ "$DEPLOY_JUMP_VM" == true ]]; then
 fi
 
 # --- Step 4: resource group ---
+# Group-scope validate/what-if need the RG to exist. An empty RG is free, so we
+# create it even in --what-if mode; no billable resources are created there.
 step "Ensure resource group"
 run_cmd "Create/verify resource group ${RESOURCE_GROUP}" \
   az group create --name "$RESOURCE_GROUP" --location "$LOCATION" --tags project=foundry-agent-network-diagnostic purpose=repro-lab -o none
@@ -313,8 +377,10 @@ probe_cmd "What-if analysis" \
 
 if [[ "$WHATIF_ONLY" == true ]]; then
   log ""
-  ok "What-if complete. No resources were created."
-  log "Re-run without --what-if to deploy."
+  ok "What-if complete. No billable resources were created."
+  log "(An empty resource group '${RESOURCE_GROUP}' may exist for previewing — free.)"
+  log "Re-run without --what-if to deploy. To remove the empty group:"
+  log "  bash deploy/destroy.sh --resource-group ${RESOURCE_GROUP} --yes"
   exit 0
 fi
 

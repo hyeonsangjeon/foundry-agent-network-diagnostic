@@ -42,7 +42,7 @@ from src.config_loader import ConfigError, load_config  # noqa: E402
 from src.report.html_renderer import write_html  # noqa: E402
 from src.report.json_writer import write_json  # noqa: E402
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 # Ordered registry: check number → (id, module).
 CHECKS = [

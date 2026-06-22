@@ -19,6 +19,7 @@ AGENT_SUBNET_ID=""
 PE_SUBNET_ID=""
 APIM_RESOURCE_ID=""
 APIM_MODE=""
+ENV_FILE=""
 NO_DIAGNOSE=false
 NO_COLOR="${NO_COLOR:-}"
 
@@ -48,6 +49,8 @@ Optional:
   --pe-subnet-id <id>
   --apim-resource-id <id>
   --apim-mode <internal|external|PE|unknown>
+  --env-file <path>              Load settings (e.g. .env.external.local); honors
+                                 EXTERNAL_AZURE_CONFIG_DIR for an isolated az login.
   --no-diagnose                  Write config.json but do not run the diagnostic.
   --no-color                     Disable ANSI color output.
   -h, --help                     Show this help.
@@ -75,12 +78,31 @@ while [[ $# -gt 0 ]]; do
     --pe-subnet-id) PE_SUBNET_ID="${2:-}"; shift 2 ;;
     --apim-resource-id) APIM_RESOURCE_ID="${2:-}"; shift 2 ;;
     --apim-mode) APIM_MODE="${2:-}"; shift 2 ;;
+    --env-file) ENV_FILE="${2:-}"; shift 2 ;;
     --no-diagnose) NO_DIAGNOSE=true; shift ;;
     --no-color) NO_COLOR=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
   esac
 done
+
+# Load env file first (may set the isolated az profile so the read-only diagnostic
+# queries the right tenant). Honors EXTERNAL_AZURE_CONFIG_DIR.
+if [[ -n "$ENV_FILE" ]]; then
+  if [[ ! -f "$ENV_FILE" ]]; then
+    echo "Error: --env-file not found: $ENV_FILE" >&2
+    exit 1
+  fi
+  set -a
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
+  set +a
+  if [[ -n "${EXTERNAL_AZURE_CONFIG_DIR:-}" ]]; then
+    _az_cfg="${EXTERNAL_AZURE_CONFIG_DIR/#\~/$HOME}"
+    mkdir -p "$_az_cfg"
+    export AZURE_CONFIG_DIR="$_az_cfg"
+  fi
+fi
 
 if [[ -t 1 && -z "$NO_COLOR" ]]; then
   C_RESET=$'\033[0m'; C_BOLD=$'\033[1m'; C_GREEN=$'\033[32m'

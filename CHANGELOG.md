@@ -6,6 +6,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > 한국어 요약은 각 버전 하단의 **(한국어)** 블록을 참고하세요.
 
+## [0.3.0] - 2026-06-22
+
+External-tenant deploy support + verified live run.
+
+### Added
+- **Isolated external-tenant deploys** — `deploy/deploy.sh`, `deploy/destroy.sh`, and
+  `deploy/verify-existing.sh` now accept `--env-file <path>`. The env file is sourced and,
+  when it sets `EXTERNAL_AZURE_CONFIG_DIR`, `AZURE_CONFIG_DIR` is pointed at that isolated
+  Azure CLI profile so **every** `az` call in the run (including the diagnostic's) uses it —
+  your default/internal `az login` is never touched.
+- **Safety rails** — deploy/destroy abort unless the active tenant and subscription match
+  `E2E_EXPECTED_TENANT_ID` / `E2E_EXPECTED_SUBSCRIPTION_NAME` (or `--tenant`), making a
+  wrong-tenant deploy impossible. Resolution order is CLI flag > env-file > default.
+- **`.env.sample`** documenting `EXTERNAL_AZURE_CONFIG_DIR`, `EXTERNAL_TENANT_ID`,
+  `SUBSCRIPTION`, `LOCATION`, `SCENARIO`, `ENV_NAME`, and the two `E2E_EXPECTED_*` rails.
+  `.env.external.local` / `.env*.local` are git-ignored so real tenant values never get committed.
+- **External-tenant workflow docs** in `docs/DEPLOYMENT.md` and `docs/DEPLOYMENT.ko.md`.
+
+### Changed
+- `--what-if` messaging clarified: a free, empty resource group may be created so that
+  group-scope validate/what-if can run; no billable resources are created in preview.
+
+### Verified
+- Ran **Method 1 end-to-end against a real external tenant** (isolated profile): 9 resources
+  deployed, the live private-endpoint VIP resolved from the NIC, `config.json` generated, and the
+  read-only diagnostic produced `report.html` — correctly flagging the **DNS resolution failure**
+  (Check 1) for the custom private zone and degrading to safe manual fallbacks for the
+  log-based checks.
+
+**(한국어)** 외부 테넌트 배포 지원. 모든 `deploy/` 스크립트가 `--env-file`을 받아
+`EXTERNAL_AZURE_CONFIG_DIR` 격리 프로필로 `az`를 실행하므로 기본 로그인은 건드리지 않습니다.
+활성 테넌트/구독이 `E2E_EXPECTED_*`와 다르면 배포를 중단하는 안전장치 포함. `.env.sample` 추가,
+`.env.external.local`은 git-ignore. 실제 외부 테넌트에서 방법 1을 처음부터 끝까지 검증(9개 리소스
+배포 → 라이브 VIP 해석 → 진단 실행 → `report.html` 생성, 커스텀 프라이빗 존 DNS 실패를 정확히 탐지).
+
 ## [0.2.0] - 2026-06-22
 
 Deployment automation + two diagnostic methods.
@@ -88,5 +123,6 @@ Initial public release.
 알려진 한계: Check 5/6 로그 자동 조회는 고객 권한에 의존(없으면 수동 fallback), Data Proxy 내부 직접 관측 불가
 (주변 신호 기반 추론), SDK/Playground A/B는 가이드 제공. 검증 기준일 2026-06.
 
+[0.3.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v0.3.0
 [0.2.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v0.2.0
 [0.1.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v0.1.0

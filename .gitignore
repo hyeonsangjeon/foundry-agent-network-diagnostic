@@ -3,6 +3,13 @@ config.json
 config.*.json
 !config.sample.json
 
+# --- Local env / tenant secrets: NEVER commit ---
+.env
+.env.local
+.env.*.local
+.env.external.local
+!.env.sample
+
 # --- Generated diagnostic outputs ---
 report.html
 report.json

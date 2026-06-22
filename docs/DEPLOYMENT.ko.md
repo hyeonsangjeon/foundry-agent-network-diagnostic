@@ -108,10 +108,49 @@ open report.html        # macOS
 > 체크(1, 2, 4)는 실제 리소스에 대해 실제로 실행됩니다. 커스텀 FQDN 뒤에 실제 게이트웨이가
 > 필요하면 `--scenario apim`을 사용하세요.
 
+### 별도(외부) 테넌트에 안전하게 배포
+
+기본 `az login`이 **읽기 전용**인 구독(사내/내부 구독에서 흔함)을 가리킨다면, **격리된
+Azure CLI 프로필**을 사용해 다른 테넌트/구독에 랩을 배포하세요. 이렇게 하면 기본 로그인은
+전혀 건드리지 않습니다.
+
+1. 격리 프로필 디렉터리로 **한 번** 로그인:
+
+   ```bash
+   AZURE_CONFIG_DIR=~/.azure-agent-net-ext az login --tenant <external-tenant-id>
+   ```
+
+2. `.env.sample`을 `.env.external.local`(이미 git-ignore됨)로 복사하고 채웁니다:
+
+   ```bash
+   cp .env.sample .env.external.local
+   # 편집: EXTERNAL_AZURE_CONFIG_DIR, EXTERNAL_TENANT_ID, SUBSCRIPTION, LOCATION,
+   #       그리고 안전장치 E2E_EXPECTED_TENANT_ID / E2E_EXPECTED_SUBSCRIPTION_NAME
+   ```
+
+3. 미리보기 → 배포 → 정리 모두 외부 프로필로 실행:
+
+   ```bash
+   bash deploy/deploy.sh  --env-file .env.external.local --what-if
+   bash deploy/deploy.sh  --env-file .env.external.local --scenario lab --yes
+   bash deploy/destroy.sh --env-file .env.external.local --resource-group rg-agent-net-lab --yes
+   ```
+
+`--env-file`은 파일을 source하고 `AZURE_CONFIG_DIR`을 `EXTERNAL_AZURE_CONFIG_DIR`로
+설정하여 해당 실행의 **모든** `az` 호출(진단 포함)이 격리 프로필을 쓰게 합니다. 또한
+**안전장치**를 강제합니다: 활성 테넌트/구독이 `E2E_EXPECTED_TENANT_ID` /
+`E2E_EXPECTED_SUBSCRIPTION_NAME`와 일치하지 않으면 실행을 중단합니다. 덕분에 엉뚱한
+테넌트에 실수로 배포하는 일이 불가능합니다. CLI 플래그 > env 파일 > 기본값 순으로 우선합니다.
+
+> `verify-existing.sh`도 `--env-file`을 받으므로, 읽기 전용 진단이 같은 격리 프로필로
+> 외부 테넌트를 조회할 수 있습니다.
+
 ### 유용한 플래그
 
 | 플래그 | 의미 |
 | --- | --- |
+| `--env-file <path>` | 설정(`.env.external.local` 등)을 로드하고 `EXTERNAL_AZURE_CONFIG_DIR`로 격리 `az` 프로필 사용 + 테넌트/구독 안전장치. |
+| `--tenant <id>` | 안전장치 검증용 기대 테넌트(env 파일보다 우선). |
 | `--scenario lab\|apim` | 재현 시나리오(기본 `lab`). |
 | `--env-name <name>` | 랩 기본 이름(기본 `agent-net-lab`). |
 | `--location <region>` | Azure 지역(기본 `eastus`). |
@@ -128,6 +167,9 @@ open report.html        # macOS
 
 ```bash
 bash deploy/destroy.sh --resource-group rg-agent-net-lab --yes
+
+# 외부 테넌트(격리 프로필):
+bash deploy/destroy.sh --env-file .env.external.local --resource-group rg-agent-net-lab --yes
 ```
 
 리소스 그룹 전체를 삭제합니다. 반드시 랩용으로 만든 그룹만 지정하세요.

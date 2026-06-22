@@ -9,6 +9,7 @@ set -Eeuo pipefail
 
 RESOURCE_GROUP=""
 SUBSCRIPTION=""
+ENV_FILE=""
 ASSUME_YES=false
 NO_WAIT=false
 NO_COLOR="${NO_COLOR:-}"
@@ -24,6 +25,8 @@ Usage:
 
 Options:
   --resource-group <name>  Resource group to delete (required).
+  --env-file <path>        Load settings (e.g. .env.external.local). Honors
+                           EXTERNAL_AZURE_CONFIG_DIR for an isolated az login.
   --subscription <id|name> Target subscription (default: current az context).
   --no-wait                Return immediately; deletion continues in the background.
   --yes                    Do not prompt for confirmation.
@@ -32,12 +35,14 @@ Options:
 
 Example:
   bash deploy/destroy.sh --resource-group rg-agent-net-lab --yes
+  bash deploy/destroy.sh --env-file .env.external.local --resource-group rg-agent-net-lab --yes
 USAGE
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --resource-group) RESOURCE_GROUP="${2:-}"; shift 2 ;;
+    --env-file) ENV_FILE="${2:-}"; shift 2 ;;
     --subscription) SUBSCRIPTION="${2:-}"; shift 2 ;;
     --no-wait) NO_WAIT=true; shift ;;
     --yes) ASSUME_YES=true; shift ;;
@@ -46,6 +51,23 @@ while [[ $# -gt 0 ]]; do
     *) echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
   esac
 done
+
+# Load env file first (may set SUBSCRIPTION and the isolated az profile).
+if [[ -n "$ENV_FILE" ]]; then
+  if [[ ! -f "$ENV_FILE" ]]; then
+    echo "Error: --env-file not found: $ENV_FILE" >&2
+    exit 1
+  fi
+  set -a
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
+  set +a
+  if [[ -n "${EXTERNAL_AZURE_CONFIG_DIR:-}" ]]; then
+    _az_cfg="${EXTERNAL_AZURE_CONFIG_DIR/#\~/$HOME}"
+    mkdir -p "$_az_cfg"
+    export AZURE_CONFIG_DIR="$_az_cfg"
+  fi
+fi
 
 if [[ -z "$RESOURCE_GROUP" ]]; then
   echo "Error: --resource-group is required." >&2

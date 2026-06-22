@@ -109,10 +109,50 @@ open report.html        # macOS
 > expected. The **network-path** checks (1, 2, 4) run for real against live resources.
 > Use `--scenario apim` when you need a real gateway behind the custom FQDN.
 
+### Deploy against a separate (external) tenant — safely
+
+If your default `az login` points at a subscription where you are **read-only**
+(common on corporate/internal subs), deploy the lab into a different tenant/subscription
+using an **isolated Azure CLI profile** so your default login is never touched.
+
+1. Log in **once** to an isolated profile directory:
+
+   ```bash
+   AZURE_CONFIG_DIR=~/.azure-agent-net-ext az login --tenant <external-tenant-id>
+   ```
+
+2. Copy `.env.sample` to `.env.external.local` (already git-ignored) and fill it in:
+
+   ```bash
+   cp .env.sample .env.external.local
+   # edit: EXTERNAL_AZURE_CONFIG_DIR, EXTERNAL_TENANT_ID, SUBSCRIPTION, LOCATION,
+   #       and the safety rails E2E_EXPECTED_TENANT_ID / E2E_EXPECTED_SUBSCRIPTION_NAME
+   ```
+
+3. Preview, deploy, and tear down — all against the external profile:
+
+   ```bash
+   bash deploy/deploy.sh  --env-file .env.external.local --what-if
+   bash deploy/deploy.sh  --env-file .env.external.local --scenario lab --yes
+   bash deploy/destroy.sh --env-file .env.external.local --resource-group rg-agent-net-lab --yes
+   ```
+
+`--env-file` sources the file, sets `AZURE_CONFIG_DIR` to `EXTERNAL_AZURE_CONFIG_DIR`
+(so **every** `az` call in that run — including the diagnostic's — uses the isolated
+profile), and enforces **safety rails**: the run aborts unless the active tenant and
+subscription match `E2E_EXPECTED_TENANT_ID` / `E2E_EXPECTED_SUBSCRIPTION_NAME`. This
+makes it impossible to accidentally deploy into the wrong tenant. CLI flags still win
+over env-file values, and env-file values win over defaults.
+
+> `verify-existing.sh` also accepts `--env-file` so the read-only diagnostic queries
+> the external tenant through the same isolated profile.
+
 ### Useful flags
 
 | Flag | Meaning |
 | --- | --- |
+| `--env-file <path>` | Load settings (e.g. `.env.external.local`) and use an isolated `az` profile via `EXTERNAL_AZURE_CONFIG_DIR`, with tenant/subscription safety rails. |
+| `--tenant <id>` | Expected tenant for the safety-rail check (overrides the env file). |
 | `--scenario lab\|apim` | Reproduction scenario (default `lab`). |
 | `--env-name <name>` | Base name for the lab (default `agent-net-lab`). |
 | `--location <region>` | Azure region (default `eastus`). |
@@ -129,6 +169,9 @@ open report.html        # macOS
 
 ```bash
 bash deploy/destroy.sh --resource-group rg-agent-net-lab --yes
+
+# external tenant (isolated profile):
+bash deploy/destroy.sh --env-file .env.external.local --resource-group rg-agent-net-lab --yes
 ```
 
 Deletes the whole resource group. Point it only at a group you created for the lab.
