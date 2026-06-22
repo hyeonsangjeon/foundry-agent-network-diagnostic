@@ -10,6 +10,7 @@ Only used by deploy/deploy.sh. Keeps shell quoting out of the picture.
 from __future__ import annotations
 
 import json
+import os
 import sys
 
 
@@ -49,6 +50,12 @@ def main() -> int:
     if apim_id:
         config["apim_resource_id"] = apim_id
         config["apim_mode"] = _val(outputs, "apimMode") or "internal"
+
+    # deploy.sh resolves the lab private endpoint VIP from the live NIC and passes it
+    # here, because Bicep cannot reliably read the PE IP at deployment time.
+    vip_override = os.environ.get("FANDX_VIP_OVERRIDE", "").strip()
+    if vip_override:
+        config["expected_private_vip"] = vip_override
 
     with open(config_path, "w", encoding="utf-8") as fh:
         json.dump(config, fh, indent=2)

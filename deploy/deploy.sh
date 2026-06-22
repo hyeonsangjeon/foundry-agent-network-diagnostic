@@ -337,12 +337,30 @@ capture_cmd "Read deployment outputs" \
   az deployment group show --resource-group "$RESOURCE_GROUP" --name "$DEPLOY_NAME" --query properties.outputs -o json
 OUTPUTS_JSON="$CAPTURE"
 
+# For the lab scenario the expected private VIP is the storage private endpoint's
+# NIC IP. Resolve it from the live resource (robust; bicep cannot read it reliably).
+VIP_OVERRIDE=""
+if [[ "$SCENARIO" == "lab" ]]; then
+  PE_NAME="$(printf '%s' "$OUTPUTS_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("privateEndpointName",{}).get("value",""))' 2>/dev/null || true)"
+  if [[ -n "$PE_NAME" ]]; then
+    NIC_ID="$(az network private-endpoint show --resource-group "$RESOURCE_GROUP" --name "$PE_NAME" --query 'networkInterfaces[0].id' -o tsv 2>>"$LOG_FILE" || true)"
+    if [[ -n "$NIC_ID" ]]; then
+      VIP_OVERRIDE="$(az network nic show --ids "$NIC_ID" --query 'ipConfigurations[0].privateIPAddress' -o tsv 2>>"$LOG_FILE" || true)"
+    fi
+  fi
+  if [[ -n "$VIP_OVERRIDE" ]]; then
+    ok "Resolved private endpoint VIP: $VIP_OVERRIDE"
+  else
+    warn "Could not resolve the private endpoint VIP automatically; set expected_private_vip in config.json manually."
+  fi
+fi
+
 if [[ -f "$CONFIG_FILE" ]]; then
   cp "$CONFIG_FILE" "${CONFIG_FILE}.bak.$(date +%Y%m%d-%H%M%S)"
   warn "Existing config.json backed up."
 fi
 
-printf '%s' "$OUTPUTS_JSON" | python3 "$SCRIPT_DIR/_write_config.py" "$CONFIG_FILE"
+printf '%s' "$OUTPUTS_JSON" | FANDX_VIP_OVERRIDE="$VIP_OVERRIDE" python3 "$SCRIPT_DIR/_write_config.py" "$CONFIG_FILE"
 ok "Wrote $CONFIG_FILE"
 plain_log "$(cat "$CONFIG_FILE")"
 

@@ -233,9 +233,11 @@ resource storagePeDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGro
   }
 }
 
-// PE private IP, used as the expected private VIP and the custom A record value.
-// customDnsConfigs is populated once the private endpoint is provisioned.
-var peIp = storagePe.properties.customDnsConfigs[0].ipAddresses[0]
+// Resolvable storage blob FQDN. Inside the VNet, the linked privatelink.blob zone
+// (populated by the private DNS zone group above) resolves this to the PE's private
+// IP. The custom record below CNAMEs to it, so we never have to read the PE IP at
+// deploy time (customDnsConfigs can be empty when a zone group is attached).
+var storageBlobFqdn = '${storage.name}.blob.${environment().suffixes.storage}'
 
 // -----------------------------------------------------------------------------
 // Custom private DNS zone — reproduces the "custom private-only FQDN" path
@@ -259,17 +261,16 @@ resource customZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2
   }
 }
 
-// lab scenario: custom FQDN -> storage PE private IP
-resource customRecordLab 'Microsoft.Network/privateDnsZones/A@2020-06-01' = if (scenario == 'lab') {
+// lab scenario: custom FQDN -> CNAME -> storage blob FQDN (resolves to the PE IP
+// via the linked privatelink zone). Robust regardless of customDnsConfigs state.
+resource customRecordLab 'Microsoft.Network/privateDnsZones/CNAME@2020-06-01' = if (scenario == 'lab') {
   parent: customZone
   name: customBackendHost
   properties: {
     ttl: 300
-    aRecords: [
-      {
-        ipv4Address: peIp
-      }
-    ]
+    cnameRecord: {
+      cname: storageBlobFqdn
+    }
   }
   dependsOn: [
     storagePeDnsGroup
@@ -381,9 +382,13 @@ output vnetId string = vnet.id
 output agentSubnetId string = agentSubnet.id
 output peSubnetId string = peSubnet.id
 output backendFqdn string = backendFqdn
+// For apim the internal VIP is reliably populated. For lab the VIP is resolved from
+// the live private endpoint NIC by deploy.sh (see privateEndpointName below).
 #disable-next-line BCP318
-output expectedPrivateVip string = scenario == 'apim' ? apim.properties.privateIPAddresses[0] : peIp
+output expectedPrivateVip string = scenario == 'apim' ? apim.properties.privateIPAddresses[0] : ''
 output storageAccountName string = storageAccountName
+output storageBlobFqdn string = storageBlobFqdn
+output privateEndpointName string = storagePe.name
 output customDnsZoneName string = customDnsZoneName
 #disable-next-line BCP318
 output apimResourceId string = scenario == 'apim' ? apim.id : ''

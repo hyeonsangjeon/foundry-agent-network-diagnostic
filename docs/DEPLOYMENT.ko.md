@@ -32,7 +32,7 @@ flowchart LR
       AS[agent-subnet<br/>Microsoft.App/environments 위임]
       PE[pe-subnet<br/>프라이빗 엔드포인트]
     end
-    CZ[커스텀 프라이빗 DNS 영역<br/>internal.agentlab.example] -->|llm A 레코드| PEIP[(PE 프라이빗 VIP)]
+    CZ[커스텀 프라이빗 DNS 영역<br/>internal.agentlab.example] -->|llm CNAME| PEIP[(PE 프라이빗 VIP)]
     PE --> PEIP
     PEIP --> SA[스토리지 계정<br/>퍼블릭 액세스 차단]
     style AS fill:#fff3cd,stroke:#9a6700
@@ -44,7 +44,8 @@ flowchart LR
 - VNet에 연결된 **커스텀 프라이빗 전용 DNS 영역**(`internal.agentlab.example`) — "프라이빗
   으로만 해석되는 커스텀 FQDN" 상황을 재현합니다;
 - **프라이빗 백엔드**: 기본값은 **프라이빗 엔드포인트** 뒤의 스토리지 계정이며, 커스텀
-  FQDN `llm.internal.agentlab.example`가 PE 프라이빗 VIP를 가리킵니다.
+  FQDN `llm.internal.agentlab.example`가 스토리지 프라이빗 엔드포인트로 CNAME되어 PE
+  프라이빗 VIP로 해석됩니다.
 
 두 가지 시나리오:
 

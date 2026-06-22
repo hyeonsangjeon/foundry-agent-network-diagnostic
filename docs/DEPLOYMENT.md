@@ -32,7 +32,7 @@ flowchart LR
       AS[agent-subnet<br/>delegated Microsoft.App/environments]
       PE[pe-subnet<br/>private endpoint]
     end
-    CZ[custom private DNS zone<br/>internal.agentlab.example] -->|llm A-record| PEIP[(PE private VIP)]
+    CZ[custom private DNS zone<br/>internal.agentlab.example] -->|llm CNAME| PEIP[(PE private VIP)]
     PE --> PEIP
     PEIP --> SA[Storage account<br/>public access disabled]
     style AS fill:#fff3cd,stroke:#9a6700
@@ -45,7 +45,8 @@ flowchart LR
 - a **custom private-only DNS zone** (`internal.agentlab.example`) linked to the VNet —
   this reproduces the "custom FQDN that only resolves privately" situation;
 - a **private backend**: by default a Storage account fronted by a **Private Endpoint**,
-  with the custom FQDN `llm.internal.agentlab.example` pointed at the PE's private VIP.
+  with the custom FQDN `llm.internal.agentlab.example` CNAMEd to the storage
+  private endpoint (which resolves to the PE's private VIP).
 
 Two scenarios:
 
