@@ -18,7 +18,12 @@
 </p>
 
 <p align="center">
-  <img src="examples/sample_report.png" alt="Foundry Agent Network Diagnostic dashboard" width="820">
+  <img src="docs/media/demo.gif" alt="One command — six checks — a color-coded root-cause verdict" width="860">
+</p>
+
+<p align="center">
+  <em>One command → six checks → a shareable, color-coded root-cause verdict.</em><br>
+  ▶ <strong>5-minute walkthrough (KO &amp; EN):</strong> watch it in the <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest">latest release</a>.
 </p>
 
 > **TL;DR**
@@ -190,7 +195,11 @@ Foundry Agent Network Diagnostic
 
 ## 📊 Sample output
 
-The dashboard ([`examples/sample_report.html`](examples/sample_report.html), pictured above) shows:
+<p align="center">
+  <img src="examples/sample_report.png" alt="Foundry Agent Network Diagnostic full HTML dashboard" width="760">
+</p>
+
+The dashboard ([`examples/sample_report.html`](examples/sample_report.html), shown above) shows:
 
 - a **root-cause verdict banner** at the top (which of the 3-way outcomes + a one-line explanation),
 - six **color-coded cards** (green PASS / amber WARN / red FAIL / grey SKIPPED) with raw evidence,
@@ -240,7 +249,7 @@ repro time). Verdict: the break is **before the backend, at the resolution stage
 
 ## 📝 Changelog
 
-See [`CHANGELOG.md`](CHANGELOG.md). Current release: **v1.0.1**.
+See [`CHANGELOG.md`](CHANGELOG.md). Current release: **v1.1.0**.
 
 ## 👤 Author
 
