@@ -18,12 +18,18 @@
 </p>
 
 <p align="center">
-  <img src="docs/media/demo.gif" alt="한 번의 명령 — 6개 체크 — 색상 root-cause 판정" width="860">
+  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest"><img src="docs/media/demo.gif" alt="한 번의 명령 — 6개 체크 — 색상 root-cause 판정" width="860"></a>
 </p>
 
 <p align="center">
-  <em>한 번 실행 → 6개 체크 → 공유 가능한 색상 root-cause 판정.</em><br>
-  ▶ <strong>5분 따라하기 영상 (한국어 &amp; English):</strong> <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest">최신 릴리스</a>에서 보세요.
+  <strong>한 번 실행 → 6개 체크 → 공유 가능한 색상 root-cause 판정.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest"><img alt="▶ 5분 따라하기 가이드 영상 (한국어 & English)" src="https://img.shields.io/badge/%E2%96%B6%20Watch%20the%205--minute%20walkthrough-KO%20%26%20EN-d29922?style=for-the-badge"></a>
+</p>
+<p align="center">
+  <sub><b>한 단계씩 따라하는 how-to 영상</b> — <em>clone → 로컬 mock → 테스트 → 배포 → 검증 → 정리</em></sub>
 </p>
 
 > **TL;DR**

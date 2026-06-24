@@ -18,12 +18,18 @@
 </p>
 
 <p align="center">
-  <img src="docs/media/demo.gif" alt="One command — six checks — a color-coded root-cause verdict" width="860">
+  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest"><img src="docs/media/demo.gif" alt="One command — six checks — a color-coded root-cause verdict" width="860"></a>
 </p>
 
 <p align="center">
-  <em>One command → six checks → a shareable, color-coded root-cause verdict.</em><br>
-  ▶ <strong>5-minute walkthrough (KO &amp; EN):</strong> watch it in the <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest">latest release</a>.
+  <strong>One command → six checks → a shareable, color-coded root-cause verdict.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest"><img alt="▶ Watch the 5-minute walkthrough (KO & EN)" src="https://img.shields.io/badge/%E2%96%B6%20Watch%20the%205--minute%20walkthrough-KO%20%26%20EN-d29922?style=for-the-badge"></a>
+</p>
+<p align="center">
+  <sub><b>Step-by-step how-to video</b> — <em>clone → local mock → test → deploy → verify → cleanup</em></sub>
 </p>
 
 > **TL;DR**
