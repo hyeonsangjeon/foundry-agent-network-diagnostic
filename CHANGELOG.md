@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > 한국어 요약은 각 버전 하단의 **(한국어)** 블록을 참고하세요.
 
+## [1.1.0] - 2026-06-24
+
+Documentation & demo: an animated README hero and a 5-minute bilingual walkthrough video.
+No change to the diagnostic engine, the checks, or the report format.
+
+### Added
+- **Animated README demo** (`docs/media/demo.gif`) — a single, self-explanatory loop: one command →
+  six checks → the root-cause verdict in the console, then the `report.html` verdict banner and the
+  Template 16 topology table (the "why"). Language-neutral, ~190 KB, no external dependencies.
+- **5-minute walkthrough videos — Korean & English** (attached as release assets): clone → local
+  mock → test → deploy (guide mode) → verify → cleanup, with on-screen chapter labels, captions, and
+  callouts that point out exactly which `report.html` elements and which deploy settings matter.
+
+### Changed
+- **README polish (EN/KO)** — the animated demo now leads the page; the full static dashboard moved
+  into the **Sample output** section; added a one-line value tagline and a link to the walkthrough
+  video. Both language editions kept in sync.
+
+**(한국어)** 문서·데모 업데이트: 움직이는 README 히어로와 5분 한/영 따라하기 영상. 진단 엔진·체크·리포트
+형식에는 변화가 없습니다. **추가:** `한 번 실행 → 6개 체크 → root-cause 판정`(콘솔)에 이어 `report.html`
+판정 배너와 Template 16 토폴로지 표("왜")까지 한 루프로 보여주는 **애니메이션 데모**(`docs/media/demo.gif`,
+언어 중립·약 190 KB·외부 의존성 없음). clone → 로컬 mock → 테스트 → 배포(guide) → 검증 → 정리 흐름을
+챕터 라벨·자막·콜아웃과 함께 담은 **5분 따라하기 영상(한국어/English)**(릴리스 에셋). **변경:** README(영/한)
+상단에 데모 배치, 전체 정적 대시보드는 **출력 예시** 섹션으로 이동, 한 줄 가치 태그라인과 영상 링크 추가.
+
 ## [1.0.1] - 2026-06-22
 
 Quality polish: tests, CI, and neutral wording. No change to how the diagnosis works.
@@ -196,6 +221,7 @@ Initial public release.
 알려진 한계: Check 5/6 로그 자동 조회는 사용자 권한에 의존(없으면 수동 fallback), Data Proxy 내부 직접 관측 불가
 (주변 신호 기반 추론), SDK/Playground A/B는 가이드 제공. 검증 기준일 2026-06.
 
+[1.1.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v1.1.0
 [1.0.1]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v1.0.1
 [1.0.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v1.0.0
 [0.3.0]: https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/tag/v0.3.0

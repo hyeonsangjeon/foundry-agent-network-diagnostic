@@ -18,7 +18,12 @@
 </p>
 
 <p align="center">
-  <img src="examples/sample_report.png" alt="Foundry Agent Network Diagnostic 대시보드" width="820">
+  <img src="docs/media/demo.gif" alt="한 번의 명령 — 6개 체크 — 색상 root-cause 판정" width="860">
+</p>
+
+<p align="center">
+  <em>한 번 실행 → 6개 체크 → 공유 가능한 색상 root-cause 판정.</em><br>
+  ▶ <strong>5분 따라하기 영상 (한국어 &amp; English):</strong> <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest">최신 릴리스</a>에서 보세요.
 </p>
 
 > **TL;DR**
@@ -188,7 +193,11 @@ Foundry Agent Network Diagnostic
 
 ## 📊 출력 예시 (Sample output)
 
-위 스크린샷의 대시보드([`examples/sample_report.html`](examples/sample_report.html))는 다음을 보여줍니다:
+<p align="center">
+  <img src="examples/sample_report.png" alt="Foundry Agent Network Diagnostic 전체 HTML 대시보드" width="760">
+</p>
+
+위 대시보드([`examples/sample_report.html`](examples/sample_report.html))는 다음을 보여줍니다:
 
 - 상단의 **root-cause 판정 배너** (3-way 결과 중 어디인지 + 한 줄 설명),
 - raw 근거가 담긴 6개의 **색깔 카드** (녹 PASS / 노 WARN / 적 FAIL / 회 SKIPPED),
@@ -236,7 +245,7 @@ resolution 단계** — 방향은 *플랫폼 경로*, "확인 필요"로 표기.
 
 ## 📝 변경 이력 (Changelog)
 
-[`CHANGELOG.md`](CHANGELOG.md) 참조. 현재 릴리스: **v1.0.1**.
+[`CHANGELOG.md`](CHANGELOG.md) 참조. 현재 릴리스: **v1.1.0**.
 
 ## 👤 작성자 (Author)
 
