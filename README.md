@@ -25,11 +25,28 @@
   <strong>One command → six checks → a shareable, color-coded root-cause verdict.</strong>
 </p>
 
+<div align="center">
+
+<details>
+<summary><img alt="▶ Watch the 5-minute walkthrough — KO & EN · click to expand" src="https://img.shields.io/badge/%E2%96%B6%20Watch%20the%205--min%20walkthrough-KO%20%26%20EN%20%C2%B7%20click%20to%20expand-d29922?style=for-the-badge"></summary>
+
+<br>
+
+<!-- INLINE PLAYER: drag-drop foundry-agent-network-diagnostic-tutorial.en.mp4 into any GitHub
+     comment box; paste the resulting https://github.com/user-attachments/assets/<id> URL here as:
+     <video src="https://github.com/user-attachments/assets/REPLACE-ME" controls width="820"></video> -->
+<em>The full 5-minute walkthrough plays here once enabled — or watch / download it now:</em>
+
+<p><b>⬇ Full video:</b>
+<a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/download/v1.1.0/foundry-agent-network-diagnostic-tutorial.en.mp4">English (5 min)</a> ·
+<a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/download/v1.1.0/foundry-agent-network-diagnostic-tutorial.ko.mp4">한국어 (5분)</a></p>
+
+</details>
+
+</div>
+
 <p align="center">
-  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest"><img alt="▶ Watch the 5-minute walkthrough (KO & EN)" src="https://img.shields.io/badge/%E2%96%B6%20Watch%20the%205--minute%20walkthrough-KO%20%26%20EN-d29922?style=for-the-badge"></a>
-</p>
-<p align="center">
-  <sub><b>Step-by-step how-to video</b> — <em>clone → local mock → test → deploy → verify → cleanup</em></sub>
+  <sub><b>Step-by-step how-to</b> — <em>clone → local mock → test → deploy → verify → cleanup</em></sub>
 </p>
 
 > **TL;DR**
