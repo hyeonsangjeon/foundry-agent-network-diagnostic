@@ -25,25 +25,15 @@
   <strong>한 번 실행 → 6개 체크 → 공유 가능한 색상 root-cause 판정.</strong>
 </p>
 
-<div align="center">
+<p align="center">
+  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/latest"><img alt="▶ 5분 따라하기 가이드 영상 (한국어 & English)" src="https://img.shields.io/badge/%E2%96%B6%20Watch%20the%205--minute%20walkthrough-KO%20%26%20EN-d29922?style=for-the-badge"></a>
+</p>
 
-<details>
-<summary><img alt="▶ 5분 따라하기 가이드 영상 — 한국어 & English · 클릭해서 펼치기" src="https://img.shields.io/badge/%E2%96%B6%20Watch%20the%205--min%20walkthrough-KO%20%26%20EN%20%C2%B7%20click%20to%20expand-d29922?style=for-the-badge"></summary>
-
-<br>
-
-<!-- 인라인 재생: foundry-agent-network-diagnostic-tutorial.ko.mp4 을 아무 GitHub 댓글창에 드래그-드롭 →
-     생성된 https://github.com/user-attachments/assets/<id> URL을 아래에 다음처럼 넣으면 됩니다:
-     <video src="https://github.com/user-attachments/assets/REPLACE-ME" controls width="820"></video> -->
-<em>전체 5분 영상이 활성화되면 여기서 바로 재생됩니다 — 지금 바로 보거나 받으려면:</em>
-
-<p><b>⬇ 전체 영상:</b>
-<a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/download/v1.1.0/foundry-agent-network-diagnostic-tutorial.ko.mp4">한국어 (5분)</a> ·
-<a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/download/v1.1.0/foundry-agent-network-diagnostic-tutorial.en.mp4">English (5 min)</a></p>
-
-</details>
-
-</div>
+<p align="center">
+  <b>⬇ 전체 영상 다운로드:</b>
+  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/download/v1.1.0/foundry-agent-network-diagnostic-tutorial.ko.mp4">한국어 (5분)</a> ·
+  <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/download/v1.1.0/foundry-agent-network-diagnostic-tutorial.en.mp4">English (5 min)</a>
+</p>
 
 <p align="center">
   <sub><b>한 단계씩 따라하는 how-to</b> — <em>clone → 로컬 mock → 테스트 → 배포 → 검증 → 정리</em></sub>
