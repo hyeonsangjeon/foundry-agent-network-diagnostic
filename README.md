@@ -44,7 +44,7 @@
 >   call to a private backend (private APIM / private endpoint) breaks — targeting DNS resolution
 >   failures on the BYO AI Gateway path.
 > - **Who:** teams running Foundry Agents in a locked-down VNet, and the engineers who support them.
-> - **How:** one command → six checks → a color-coded HTML dashboard with a clear root-cause verdict.
+> - **How:** one command → six checks → one self-contained `report.html`: a color-coded dashboard with a clear root-cause verdict.
 
 ---
 
@@ -212,7 +212,7 @@ Foundry Agent Network Diagnostic
   <img src="examples/sample_report.png" alt="Foundry Agent Network Diagnostic full HTML dashboard" width="760">
 </p>
 
-The dashboard ([`examples/sample_report.html`](examples/sample_report.html), shown above) shows:
+Every run writes one self-contained `report.html` (the [sample](examples/sample_report.html) shown above) — it opens straight in a browser, with no server or build step, and shows:
 
 - a **root-cause verdict banner** at the top (which of the 3-way outcomes + a one-line explanation),
 - six **color-coded cards** (green PASS / amber WARN / red FAIL / grey SKIPPED) with raw evidence,

@@ -44,7 +44,7 @@
 >   호출이 *어느 단계*에서 깨지는지 격리하는 read-only 일회성 진단 도구. 특히 BYO AI Gateway 경로의
 >   **DNS resolution 실패**를 표적으로 합니다.
 > - **누구를 위해:** 폐쇄형 VNet에서 Foundry Agent를 운영하는 팀, 그리고 이를 지원하는 엔지니어.
-> - **어떻게:** 한 번 실행 → 6개 체크 → root cause 판정이 담긴 색깔 HTML 대시보드.
+> - **어떻게:** 한 번 실행 → 6개 체크 → 자체 완결 `report.html` 한 개: root cause 판정이 담긴 색깔 대시보드.
 
 ---
 
@@ -210,7 +210,7 @@ Foundry Agent Network Diagnostic
   <img src="examples/sample_report.png" alt="Foundry Agent Network Diagnostic 전체 HTML 대시보드" width="760">
 </p>
 
-위 대시보드([`examples/sample_report.html`](examples/sample_report.html))는 다음을 보여줍니다:
+한 번 실행할 때마다 자체 완결 `report.html` 한 개가 생성됩니다(위 [샘플](examples/sample_report.html), 브라우저로 바로 열림 · 서버/빌드 불필요). 대시보드 구성은 다음과 같습니다:
 
 - 상단의 **root-cause 판정 배너** (3-way 결과 중 어디인지 + 한 줄 설명),
 - raw 근거가 담긴 6개의 **색깔 카드** (녹 PASS / 노 WARN / 적 FAIL / 회 SKIPPED),
