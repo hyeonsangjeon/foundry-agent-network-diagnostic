@@ -204,6 +204,35 @@ Foundry Agent Network Diagnostic
 ★ Check 5가 핵심입니다. **환경 구성**(DNS zone-link / forwarding)과 **플랫폼 경로**(managed resolver
 동작)를 가릅니다.
 
+## 🧩 Template 16 토폴로지란?
+
+**Template 16**은 이 도구가 공식 Foundry **network-secured Standard Agent + private APIM** 레퍼런스
+토폴로지를 부르는 약칭입니다 — [foundry-samples](https://github.com/microsoft-foundry/foundry-samples)
+저장소가 번호가 매겨진 Bicep/Terraform 인프라 템플릿으로 배포하는 *지원되는* 네트워크 구성 모양이죠.
+**Check 4**가 현재 환경을 이 패턴과 **5개 dimension**으로 비교(diff)합니다.
+
+> **이름 주의:** 공식 샘플은 번호로 관리되며 시간에 따라 바뀝니다. 현재 network-secured Standard
+> Agent(private-APIM) 변형은 Bicep `15-private-network-standard-agent-setup` / Terraform
+> `15b-…-byovnet`로 배포됩니다. *"Template 16"은 이 자산의 개념적 라벨*이며 공식 제품명이 아닙니다 —
+> 실제 번호는 샘플 저장소에서 재확인하세요.
+
+| Dimension | Template 16 기대값 | 왜 중요한가 |
+| --- | --- | --- |
+| **APIM exposure** | APIM 서비스에 **인바운드 Private Endpoint** | classic internal-VNet 모드의 VIP는 managed Data Proxy resolver 경로가 못 풀 수 있음 |
+| **Backend DNS zone** | `privatelink.azure-api.net` (Azure 관리 존) | custom private-only FQDN은 *별도* 존에 있어 resolver 경로에 명시적으로 link되어야 함 |
+| **Foundry connection category** | `ApiManagement` | 일반 `ModelGateway`/custom 연결은 호스트네임이 Data Proxy에 제시되는 방식을 바꿀 수 있음 |
+| **Agent subnet delegation** | `Microsoft.App/environments`로 위임 | 플랫폼이 managed 호스트를 기대 경로에 배치하려면 필요 |
+| **Private DNS zone link** | backend 존이 **agent 경로 resolver/VNet에 link됨** | 존이 맞아도 link 안 되면 실패 — **BYO custom-FQDN에서 가장 흔한 끊김** |
+
+**공식 출처** (Check 4 baseline):
+
+- [foundry-samples — Bicep 인프라 템플릿 (index)](https://github.com/microsoft-foundry/foundry-samples/tree/main/infrastructure/infrastructure-setup-bicep)
+- [Network-secured Standard Agent — Bicep `15-private-network-standard-agent-setup`](https://github.com/microsoft-foundry/foundry-samples/tree/main/infrastructure/infrastructure-setup-bicep/15-private-network-standard-agent-setup)
+- [BYO VNet Standard Agent — Terraform `15b-private-network-standard-agent-setup-byovnet`](https://github.com/microsoft-foundry/foundry-samples/tree/main/infrastructure/infrastructure-setup-terraform/15b-private-network-standard-agent-setup-byovnet)
+- [Connect to API Management using a private endpoint (`privatelink.azure-api.net`)](https://learn.microsoft.com/en-us/azure/api-management/api-management-using-with-private-endpoints)
+
+전체 출처와 검증 노트는 [`docs/REFERENCES.md`](docs/REFERENCES.md) 참고.
+
 ## 📊 출력 예시 (Sample output)
 
 <p align="center">

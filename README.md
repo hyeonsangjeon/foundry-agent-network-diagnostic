@@ -206,6 +206,36 @@ Foundry Agent Network Diagnostic
 ★ Check 5 is the heart: it splits **environment configuration** (DNS zone-link / forwarding) from the
 **platform path** (managed resolver behavior).
 
+## 🧩 Template 16 topology explained
+
+**Template 16** is this tool's shorthand for the official Foundry **network-secured Standard Agent +
+private APIM** reference topology — the *supported* network shape that the
+[foundry-samples](https://github.com/microsoft-foundry/foundry-samples) repo publishes as numbered
+Bicep/Terraform infrastructure templates. **Check 4** diffs your actual environment against it across
+**5 dimensions**.
+
+> **Naming note:** the official samples are numbered and evolve over time. Today the network-secured
+> Standard Agent (private-APIM) variant ships as Bicep `15-private-network-standard-agent-setup` /
+> Terraform `15b-…-byovnet`. *"Template 16" is this asset's conceptual label*, not an official product
+> name — always confirm the current number in the samples repo.
+
+| Dimension | Template 16 expects | Why it matters |
+| --- | --- | --- |
+| **APIM exposure** | Inbound **Private Endpoint** on the APIM service | A classic internal-VNet-mode VIP may not be resolvable by the managed Data Proxy resolver path |
+| **Backend DNS zone** | `privatelink.azure-api.net` (Azure-managed zone) | A custom private-only FQDN lives in a *separate* zone that must be explicitly linked into the resolver path |
+| **Foundry connection category** | `ApiManagement` | A generic `ModelGateway`/custom connection can change how the hostname is presented to the Data Proxy |
+| **Agent subnet delegation** | Delegated to `Microsoft.App/environments` | Required so the platform can place its managed hosts on the expected network path |
+| **Private DNS zone link** | Backend zone **linked to the agent-path resolver/VNet** | Even a correct zone fails if it isn't linked — the **single most common break in BYO custom-FQDN setups** |
+
+**Official sources** (the Check 4 baseline):
+
+- [foundry-samples — Bicep infrastructure templates (index)](https://github.com/microsoft-foundry/foundry-samples/tree/main/infrastructure/infrastructure-setup-bicep)
+- [Network-secured Standard Agent — Bicep `15-private-network-standard-agent-setup`](https://github.com/microsoft-foundry/foundry-samples/tree/main/infrastructure/infrastructure-setup-bicep/15-private-network-standard-agent-setup)
+- [BYO VNet Standard Agent — Terraform `15b-private-network-standard-agent-setup-byovnet`](https://github.com/microsoft-foundry/foundry-samples/tree/main/infrastructure/infrastructure-setup-terraform/15b-private-network-standard-agent-setup-byovnet)
+- [Connect to API Management using a private endpoint (`privatelink.azure-api.net`)](https://learn.microsoft.com/en-us/azure/api-management/api-management-using-with-private-endpoints)
+
+See [`docs/REFERENCES.md`](docs/REFERENCES.md) for the full source list and verification notes.
+
 ## 📊 Sample output
 
 <p align="center">
