@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Foundry Agent Network Diagnostic Tutorial</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+    }
+
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px 56px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.1;
+    }
+
+    p {
+      color: #cbd5e1;
+      font-size: 16px;
+    }
+
+    a {
+      color: #93c5fd;
+    }
+
+    .player {
+      margin: 28px 0;
+      overflow: hidden;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      background: #020617;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    video,
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .links a {
+      display: inline-block;
+      padding: 10px 14px;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      color: #dbeafe;
+      text-decoration: none;
+      background: #1e293b;
+    }
+
+    .note {
+      margin-top: 24px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Foundry Agent Network Diagnostic Tutorial</h1>
+    <p>
+      Five-minute walkthrough for the read-only diagnostic workflow:
+      mock mode, check pipeline, HTML report, and support-case handoff.
+    </p>
+
+    <div class="player">
+      <video controls preload="metadata" poster="./media/social-preview.png">
+        <source
+          src="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/download/v1.1.0/foundry-agent-network-diagnostic-tutorial.en.mp4"
+          type="video/mp4">
+        Your browser could not play the MP4 directly. Use the links below.
+      </video>
+    </div>
+
+    <div class="links">
+      <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic">Public repo</a>
+      <a href="https://github.com/hyeonsangjeon/foundry-agent-network-diagnostic/releases/download/v1.1.0/foundry-agent-network-diagnostic-tutorial.en.mp4">Download MP4</a>
+      <a href="./media/demo.gif">Open GIF preview</a>
+    </div>
+
+    <p class="note">
+      If your browser or tenant policy blocks GitHub release video playback, use the GIF preview or download the MP4.
+    </p>
+  </main>
+</body>
+</html>
